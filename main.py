@@ -45,7 +45,7 @@ def route():
     return render_template('home.html')
 
 
-@app.route('/login', methods=['GET ', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         connection = engine.connect()
@@ -97,3 +97,11 @@ def users():
     for row in user_list:
         s += str(row) + '<br>'
     return s
+
+@app.route('/textquestion')
+def textquestion():
+    return render_template('textquestion.html', text="bamo raga!")
+
+@app.route('/datequestion')
+def datequestion():
+    return render_template('datequestion.html', text="LEtzee gooo")
