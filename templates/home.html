@@ -4,53 +4,55 @@
 <!-- BANNER -->
 <div class="section no-pad-bot" id="base-banner">
     <div class="container">
-      <br>
+        <br>
         <!-- TITLE -->
-      <h1 class="header center orange-text text-darken-2">Create your survey and send it to everyone</h1>
-      <div class="row center">
-          <!-- IMAGE -->
-        <img class="responsive-img circle" src="{{ url_for('static',filename='images/survey.png') }}">
-          <!-- SUBTITLE -->
-        <h5 class="header col s12 light">A modern responsive website for creating surveys and analyzing results</h5>
-      </div>
+        <h1 class="header center orange-text text-darken-2">Create your survey and send it to everyone</h1>
+        <div class="row center">
+            <!-- IMAGE -->
+            <img class="responsive-img circle" src="{{ url_for('static',filename='images/survey.png') }}">
+            <!-- SUBTITLE -->
+            <h5 class="header col s12 light">A modern responsive website for creating surveys and analyzing results</h5>
+        </div>
         <!-- BUTTON -->
-      <div class="row center">
-        <a href="/registration" id="start-button" class="btn-large waves-effect waves-light orange darken-2 purple-text text-darken-4" style="font-weight: 600">Get Started</a>
-      </div>
-      <br><br>
+        <div class="row center">
+            <a href="/registration" id="start-button"
+               class="btn-large waves-effect waves-light orange darken-2 purple-text text-darken-4"
+               style="font-weight: 600">Get Started</a>
+        </div>
+        <br><br>
     </div>
-  </div>
+</div>
 
 <!-- DESCRIPTION -->
-  <div class="container">
+<div class="container">
     <div class="section">
-      <div class="row">
-          <!--   CREATE   -->
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center purple-text text-darken-4"><i class="large material-icons">create</i></h2>
-            <h5 class="center orange-text text-darken-2">CREATE</h5>
-            <p class="light center">Create your survey online using our web creation tool</p>
-          </div>
+        <div class="row">
+            <!--   CREATE   -->
+            <div class="col s12 m4">
+                <div class="icon-block">
+                    <h2 class="center purple-text text-darken-4"><i class="large material-icons">create</i></h2>
+                    <h5 class="center orange-text text-darken-2">CREATE</h5>
+                    <p class="light center">Create your survey online using our web creation tool</p>
+                </div>
+            </div>
+            <!--   SHARE  -->
+            <div class="col s12 m4">
+                <div class="icon-block">
+                    <h2 class="center purple-text text-darken-4"><i class="large material-icons">share</i></h2>
+                    <h5 class="center orange-text text-darken-2">SHARE</h5>
+                    <p class="light center">Share it with everyone with a simple link on every social</p>
+                </div>
+            </div>
+            <!--   ANALYZE   -->
+            <div class="col s12 m4">
+                <div class="icon-block">
+                    <h2 class="center purple-text text-darken-4"><i class="large material-icons">insert_chart</i></h2>
+                    <h5 class="center orange-text text-darken-2">ANALYZE</h5>
+                    <p class="light center">Analyze results with visual charts and diagrams</p>
+                </div>
+            </div>
         </div>
-          <!--   SHARE  -->
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center purple-text text-darken-4"><i class="large material-icons">share</i></h2>
-            <h5 class="center orange-text text-darken-2">SHARE</h5>
-            <p class="light center">Share it with everyone with a simple link on every social</p>
-          </div>
-        </div>
-          <!--   ANALYZE   -->
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center purple-text text-darken-4"><i class="large material-icons">insert_chart</i></h2>
-            <h5 class="center orange-text text-darken-2">ANALYZE</h5>
-            <p class="light center">Analyze results with visual charts and diagrams</p>
-          </div>
-        </div>
-      </div>
     </div>
     <br>
-  </div>
+</div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from sqlalchemy import create_engine
+from validate_email import validate_email
 
 # setup FLASK
 app = Flask(__name__)
@@ -51,14 +52,16 @@ def route():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+
         # DB query to find username
         user = get_user_by_username(request.form['login_username'])
-
         if user is not None:
+
             # check pwd
             if request.form['login_password'] == user.pwd:
+
+                # login
                 login_user(user)
-                print("user  loggato")
                 return redirect(url_for('profile'))
             else:
                 return render_template('login.html', error="password isn't correct")
@@ -73,16 +76,63 @@ def login():
 @app.route('/logout')
 @login_required  # richiede autenticazione
 def logout():
-    logout_user()  # chiamata a Flask - Login
+    # logout
+    logout_user()
     return redirect(url_for('route'))
 
 
-@app.route('/registration')
+@app.route('/registration', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('profile'))
-    return render_template('register.html')
+    if request.method == 'POST':
+        print("POSTED")
+        # taking data from the form
+        username = request.form['register_username']
+        mail = request.form['register_email']
+        password = request.form['register_password']
+        birth_date = request.form['register_birth_date']
 
+        # check if username is written
+        if username:
+
+            # DB query to check if user already exists
+            user = get_user_by_username(request.form['register_username'])
+
+            if user is None:
+                # check if email is written
+                if mail:
+                    # check if it is a valid mail
+                    if validate_email(mail):
+                        # check if a password is written
+                        if password:
+                            # check if birth date  was picked
+                            if birth_date:
+
+                                # registration
+                                connection = engine.connect()
+                                connection.execute("INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s)",username, password, mail, birth_date)
+                                return redirect(url_for('registrationCompleted'))
+
+                            else:
+                                return render_template('register.html', error="please insert your birth date")
+                        else:
+                            return render_template('register.html', error="please type a password")
+                    else:
+                        return render_template('register.html', error="email not valid")
+                else:
+                    return render_template('register.html', error="please type your email")
+            else:
+                return render_template('register.html', error="username already occupied")
+        else:
+            return render_template('register.html', error="please type a username")
+    else:
+        if current_user.is_authenticated:
+            return redirect(url_for('profile'))
+        return render_template('register.html')
+
+
+@app.route('/registrationCompleted')
+def registrationCompleted():
+    return render_template('registrationCompleted.html')
 
 @app.route('/profile')
 @login_required
@@ -107,10 +157,12 @@ def users():
         s += str(row) + '<br>'
     return s
 
+
 @app.route('/textquestion')
 def textquestion():
-    return render_template('textquestion.html', text="bamo raga!")
+    return render_template('textquestion.html', text="domanda di prova?")
+
 
 @app.route('/datequestion')
 def datequestion():
-    return render_template('datequestion.html', text="LEtzee gooo")
+    return render_template('datequestion.html', text="domanda di prova?")

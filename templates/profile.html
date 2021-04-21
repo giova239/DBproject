@@ -7,13 +7,14 @@
     <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3">
         <h3 class="orange-text text-darken-3 center">Private Area</h3>
 
-    {% if user %}
+        {% if user %}
         <h6> welcome to your private area: {{user}}!</h6>
-        <a id="logout-button" href="/logout" class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
+        <a id="logout-button" href="/logout"
+           class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
             logout<i class="material-icons right">send</i>
         </a>
         <br><br>
-    {% endif %}
+        {% endif %}
     </form>
 </div>
 
