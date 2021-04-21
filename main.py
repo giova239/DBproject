@@ -4,6 +4,11 @@ from flask_login import LoginManager, UserMixin, current_user, login_required, l
 from sqlalchemy import create_engine
 from validate_email import validate_email
 
+#TODO: hashing passwords
+#TODO: survey creation
+#TODO: improve private area (add My Surveys, share link)
+#TODO: survey compilation
+
 # setup FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secretSurveyProjectDB"
