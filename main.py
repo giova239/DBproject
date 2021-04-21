@@ -1,3 +1,4 @@
+import sqlalchemy.exc
 from flask import Flask, render_template, redirect, url_for, request, make_response
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from sqlalchemy import create_engine
@@ -106,12 +107,13 @@ def register():
                         if password:
                             # check if birth date  was picked
                             if birth_date:
-
-                                # registration
-                                connection = engine.connect()
-                                connection.execute("INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s)",username, password, mail, birth_date)
-                                return redirect(url_for('registrationCompleted'))
-
+                                try:
+                                    # registration
+                                    connection = engine.connect()
+                                    connection.execute("INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s)",username, password, mail, birth_date)
+                                    return redirect(url_for('registrationCompleted'))
+                                except (TypeError, sqlalchemy.exc.DataError):
+                                    return render_template('register.html', error="date format not valid(has to be yyyy-mm-dd)")
                             else:
                                 return render_template('register.html', error="please insert your birth date")
                         else:
