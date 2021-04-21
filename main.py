@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, request
-from flask_login import LoginManager, UserMixin, current_user, login_required, login_user
+from flask import Flask, render_template, redirect, url_for, request, make_response
+from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from sqlalchemy import create_engine
 
 # setup FLASK
@@ -25,19 +25,22 @@ class User(UserMixin):
 def load_user(user_id):
     connection = engine.connect()
     rs = connection.execute(
-        "SELECT id_user, username, hashed_password FROM \"DBquestionario\".\"User\" WHERE id_user = ?;", user_id)
-    user = rs.techone()
+        "SELECT id_user, username, hashed_password FROM \"DBquestionario\".\"User\" WHERE id_user = %s;", user_id)
+    user = rs.fetchone()
     connection.close()
-    return User(user.id, user.user, user.pwd)
+    return User(user.id_user, user.username, user.hashed_password)
 
 
 def get_user_by_username(username):
     connection = engine.connect()
     rs = connection.execute(
-        "SELECT id_user, username, hashed_password FROM \"DBquestionario\".\"User\" WHERE username = ?;", username)
-    user = rs.techone()
+        "SELECT id_user, username, hashed_password FROM \"DBquestionario\".\"User\" WHERE username = %s;", username)
+    user = rs.fetchone()
     connection.close()
-    return User(user.id, user.user, user.pwd)
+    if user:
+        return User(user.id_user, user.username, user.hashed_password)
+    else:
+        return None
 
 
 @app.route('/')
@@ -48,24 +51,30 @@ def route():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        connection = engine.connect()
-        rs = connection.execute('SELECT hashed_password FROM \"DBquestionario\".\"User\" WHERE user  =  %s', [request.form['login_username']])
-        actual_pwd = rs.fetchone()
-        connection.close()
+        # DB query to find username
+        user = get_user_by_username(request.form['login_username'])
 
-        if actual_pwd is not None:
-            #check pwd
-            if request.form['login_password'] == actual_pwd['hashed_password']:
-                login_user(get_user_by_username(request.form['user']))
+        if user is not None:
+            # check pwd
+            if request.form['login_password'] == user.pwd:
+                login_user(user)
+                print("user  loggato")
+                return redirect(url_for('profile'))
+            else:
+                return render_template('login.html', error="password isn't correct")
         else:
-            return redirect(url_for('home'))
+            return render_template('login.html', error="username doesn't exist")
     else:
-        return redirect(url_for('home'))
+        if current_user.is_authenticated:
+            return redirect(url_for('profile'))
+        return render_template('login.html')
 
 
-    if current_user.is_authenticated:
-        return redirect(url_for('profile'))
-    return render_template('login.html')
+@app.route('/logout')
+@login_required  # richiede autenticazione
+def logout():
+    logout_user()  # chiamata a Flask - Login
+    return redirect(url_for('route'))
 
 
 @app.route('/registration')
@@ -78,7 +87,7 @@ def register():
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html', user=current_user.user)
+    return make_response(render_template('profile.html', user=current_user.user))
 
 
 @app.route('/users')

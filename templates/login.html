@@ -7,6 +7,12 @@
     <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3" method="POST">
       <!-- TITLE -->
       <h4 class="header center orange-text text-darken-2">Login</h4>
+      <!-- ERROR-MESSAGE -->
+      {% if error %}
+      <div class="row">
+        <h6 class="center red-text text-darken-2">{{error}}</h6>
+      </div>
+      {% endif %}
       <div class="row">
         <!-- USERNAME -->
         <div class="input-field col s10 offset-s1 m8 offset-m2">
@@ -24,7 +30,9 @@
       <!-- BUTTON -->
       <div class="row">
         <div class="col s2 push-m1 push-l2">
-          <a href="/" id="login-button" class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4" style="font-weight: 600">login</a>
+          <button id="login-button" type="submit" method="POST" class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4">
+            login<i class="material-icons right">send</i>
+          </button>
         </div>
         <div class="col push-s2 push-l3" style="font-size: 10px;">you don't have an account?  <a class="orange-text text-darken-3" href="/registration" style="font-size: 12px; font-weight:600;">REGISTER</a></div>
       </div>
