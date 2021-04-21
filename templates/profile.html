@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+
+<h3>private area</h3>
+
+{% if user %}
+<h6> welcome {{user}}!</h6>
+{% endif %}
+
+{% endblock %}
