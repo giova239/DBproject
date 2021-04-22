@@ -2,10 +2,9 @@ import sqlalchemy.exc
 from flask import Flask, render_template, redirect, url_for, request, make_response
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from sqlalchemy import create_engine
-#from validate_email import validate_email
+from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# TODO: hashing passwords
 # TODO: survey creation
 # TODO: improve private area (add My Surveys, share link)
 # TODO: survey compilation
@@ -154,9 +153,19 @@ def route():
 
 
 @app.route('/profile')
-@login_required
 def profile():
-    return make_response(render_template('profile.html', user=current_user.user))
+    if current_user.is_authenticated:
+        return make_response(render_template('profile.html', user=current_user.user))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/createsurvey')
+def createsurvey():
+    if current_user.is_authenticated:
+        return make_response(render_template('createsurvey.html', text="domanda di prova?"))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/textquestion')
@@ -190,9 +199,6 @@ def multiplequestion():
     return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
                            opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
-@app.route('/createsurvey')
-def createsurvey():
-    return render_template('createsurvey.html', text="domanda di prova?")
 
 # ----------------- DEBUG PAGES -----------------
 
