@@ -9,6 +9,7 @@
             changeMonth: true,
             changeYear: true,
         });
+        $('.timepicker').timepicker();
     });
   }); // end of document ready
 })(jQuery); // end of jQuery name space
