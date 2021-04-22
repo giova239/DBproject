@@ -202,4 +202,3 @@ def testquery():
 
     #return s
     return "fatto";
-
