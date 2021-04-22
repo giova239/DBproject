@@ -4,10 +4,10 @@ from flask_login import LoginManager, UserMixin, current_user, login_required, l
 from sqlalchemy import create_engine
 from validate_email import validate_email
 
-#TODO: hashing passwords
-#TODO: survey creation
-#TODO: improve private area (add My Surveys, share link)
-#TODO: survey compilation
+# TODO: hashing passwords
+# TODO: survey creation
+# TODO: improve private area (add My Surveys, share link)
+# TODO: survey compilation
 
 # setup FLASK
 app = Flask(__name__)
@@ -21,6 +21,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+# ----------------- LOGIN -----------------
 class User(UserMixin):
     def __init__(self, id, user, pwd):
         self.id = id
@@ -50,11 +51,6 @@ def get_user_by_username(username):
         return None
 
 
-@app.route('/')
-def route():
-    return render_template('home.html')
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -79,6 +75,7 @@ def login():
         return render_template('login.html')
 
 
+# ----------------- LOGOUT -----------------
 @app.route('/logout')
 @login_required  # richiede autenticazione
 def logout():
@@ -87,6 +84,7 @@ def logout():
     return redirect(url_for('route'))
 
 
+# ----------------- REGISTRATION -----------------
 @app.route('/registration', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -115,10 +113,13 @@ def register():
                                 try:
                                     # registration
                                     connection = engine.connect()
-                                    connection.execute("INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s)",username, password, mail, birth_date)
+                                    connection.execute(
+                                        "INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s)",
+                                        username, password, mail, birth_date)
                                     return redirect(url_for('registrationCompleted'))
                                 except (TypeError, sqlalchemy.exc.DataError):
-                                    return render_template('register.html', error="date format not valid(has to be yyyy-mm-dd)")
+                                    return render_template('register.html',
+                                                           error="date format not valid(has to be yyyy-mm-dd)")
                             else:
                                 return render_template('register.html', error="please insert your birth date")
                         else:
@@ -141,50 +142,46 @@ def register():
 def registrationCompleted():
     return render_template('registrationCompleted.html')
 
+
+# ----------------- PAGES -----------------
+@app.route('/')
+def route():
+    return render_template('home.html')
+
+
 @app.route('/profile')
 @login_required
 def profile():
     return make_response(render_template('profile.html', user=current_user.user))
 
 
-@app.route('/users')
-def users():
-    # Database connection
-    connection = engine.connect()
-
-    # test query
-    user_list = connection.execute("SELECT  * FROM \"DBquestionario\".\"User\";")
-
-    # closing connection
-    connection.close()
-
-    # result iteration
-    s = ""
-    for row in user_list:
-        s += str(row) + '<br>'
-    return s
-
-
 @app.route('/textquestion')
 def textquestion():
     return render_template('textquestion.html', text="domanda di prova?")
+
 
 @app.route('/datequestion')
 def datequestion():
     return render_template('datequestion.html', text="domanda di prova?")
 
+
 @app.route('/timequestion')
 def timequestion():
     return render_template('timequestion.html', text="domanda di prova?")
+
 
 @app.route('/rangequestion')
 def rangequestion():
     return render_template('rangequestion.html', text="domanda di prova?")
 
+
 @app.route('/singlemultiplequestion')
 def singlemultiplequestion():
-    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1", opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
 
 @app.route('/multiplequestion')
 def multiplequestion():
-    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1", opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
