@@ -144,6 +144,8 @@ def registrationCompleted():
 
 
 # ----------------- PAGES -----------------
+
+
 @app.route('/')
 def route():
     return render_template('home.html')
@@ -185,3 +187,18 @@ def singlemultiplequestion():
 def multiplequestion():
     return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
                            opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
+
+# ----------------- DEBUG PAGES -----------------
+
+@app.route('/testquery')
+def users():
+    connection = engine.connect()
+    users = connection.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'pg_user';")
+    s = ""
+
+    for user in users:
+        s += str(user) + "<br>"
+
+    return s
+
