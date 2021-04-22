@@ -169,7 +169,22 @@ def users():
 def textquestion():
     return render_template('textquestion.html', text="domanda di prova?")
 
-
 @app.route('/datequestion')
 def datequestion():
     return render_template('datequestion.html', text="domanda di prova?")
+
+@app.route('/timequestion')
+def timequestion():
+    return render_template('timequestion.html', text="domanda di prova?")
+
+@app.route('/rangequestion')
+def rangequestion():
+    return render_template('rangequestion.html', text="domanda di prova?")
+
+@app.route('/singlemultiplequestion')
+def singlemultiplequestion():
+    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1", opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
+@app.route('/multiplequestion')
+def multiplequestion():
+    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1", opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
