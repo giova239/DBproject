@@ -192,13 +192,14 @@ def multiplequestion():
 # ----------------- DEBUG PAGES -----------------
 
 @app.route('/testquery')
-def users():
+def testquery():
     connection = engine.connect()
-    users = connection.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'pg_user';")
-    s = ""
+    users = connection.execute("ALTER USER postgres WITH PASSWORD 'admin';")
+    #s = ""
 
-    for user in users:
-        s += str(user) + "<br>"
+    #for user in users:
+    #    s += str(user) + "<br>"
 
-    return s
+    #return s
+    return "fatto";
 
