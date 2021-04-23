@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # TODO: survey creation
 # TODO: improve private area (add My Surveys, share link)
 # TODO: survey compilation
+# TODO: user discrimination on all pages
 
 # setup FLASK
 app = Flask(__name__)
@@ -141,7 +142,7 @@ def register():
 
 @app.route('/registrationCompleted')
 def registrationCompleted():
-    return render_template('registrationCompleted.html')
+    return render_template('registrationCompleted.html', user=current_user.user)
 
 
 # ----------------- PAGES -----------------
@@ -149,7 +150,10 @@ def registrationCompleted():
 
 @app.route('/')
 def route():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        return render_template('home.html', user=current_user.user)
+    else:
+        return render_template('home.html')
 
 
 @app.route('/profile')
@@ -163,7 +167,7 @@ def profile():
 @app.route('/createsurvey')
 def createsurvey():
     if current_user.is_authenticated:
-        return make_response(render_template('createsurvey.html', text="domanda di prova?"))
+        return make_response(render_template('createsurvey.html', user=current_user.user, text="domanda di prova?"))
     else:
         return redirect(url_for('login'))
 
@@ -196,7 +200,7 @@ def singlemultiplequestion():
 
 @app.route('/multiplequestion')
 def multiplequestion():
-    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+    return render_template('multiplequestion.html'  , text="domanda di prova?", opt1="risposta opt1",
                            opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
 
