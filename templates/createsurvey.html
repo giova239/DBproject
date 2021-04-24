@@ -17,34 +17,55 @@
         </form>
     </div>
     <!-- QUESTION FORM -->
-    <div class="row">
-        <form class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 deep-orange lighten-5">
-            <!-- QUESTION NUMBER -->
-            <h6 class="header center purple-text text-darken-3">Question #1</h6>
-            <!-- QUESTION TEXT -->
-            <div class="input-field col s10 offset-s1 m8 offset-m2">
-                <i class="material-icons prefix">label_outline</i>
-                <input name="question_text" id="icon_question_text" type="text">
-                <label for="icon_question_text">question text</label>
-            </div>
-            <!-- QUESTION TYPE -->
-            <div class="input-field col s8 offset-s2 m6 offset-m3">
-                <select>
-                    <option value="" disabled selected>Choose the answer type</option>
-                    <option value="1" data-icon="{{ url_for('static',filename='images/single_answer.svg') }}" style="color:#4a148c;">Multiple answer (One selectable option) <i class="material-icons right">done</i></option>
-                    <option value="2" data-icon="{{ url_for('static',filename='images/multiple_answer.svg') }}">Multiple answer (Multiple selectable options)</option>
-                    <option value="3" data-icon="{{ url_for('static',filename='images/text_answer.svg') }}">Text answer</option>
-                    <option value="4" data-icon="{{ url_for('static',filename='images/date_answer.svg') }}">Date answer</option>
-                    <option value="5" data-icon="{{ url_for('static',filename='images/time_answer.svg') }}">Time answer</option>
-                    <option value="5" data-icon="{{ url_for('static',filename='images/liking_answer.svg') }}">Liking answer</option>
-                </select>
-                <label>Answer type</label>
-            </div>
-        </form>
+    <div id="questionForm1">
+        <div class="row">
+            <form class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 deep-orange lighten-5">
+                <!-- REMOVE QUESTION BUTTON -->
+                <a id="questionCloseButton1" class="questionCloseButton right btn-floating btn-small waves-effect waves-light orange darken-2"
+                   style="margin-top: 10px;"><i
+                        class="material-icons purple-text text-darken-3">close</i></a>
+                <!-- QUESTION NUMBER -->
+                <h6 class="questionTitle header center purple-text text-darken-3">Question #1</h6>
+                <!-- QUESTION TEXT -->
+                <div class="input-field col s10 offset-s1 m8 offset-m2">
+                    <i class="material-icons prefix">label_outline</i>
+                    <input class="questionText" name="question_text_1" id="icon_question_text_1" type="text">
+                    <label class="questionTextLabel" for="icon_question_text_1">question text</label>
+                </div>
+                <!-- QUESTION TYPE -->
+                <div class="questionTypeSelectWrapper input-field col s8 offset-s2 m6 offset-m3">
+                    <select id="question_type_1" class="questionType">
+                        <option value="" disabled selected>Choose the answer type</option>
+                        <option value="1" data-icon="{{ url_for('static',filename='images/single_answer.svg') }}"
+                                style="color:#4a148c;">Multiple answer (One selectable option) <i
+                                class="material-icons right">done</i></option>
+                        <option value="2" data-icon="{{ url_for('static',filename='images/multiple_answer.svg') }}">
+                            Multiple
+                            answer (Multiple selectable options)
+                        </option>
+                        <option value="3" data-icon="{{ url_for('static',filename='images/text_answer.svg') }}">Text
+                            answer
+                        </option>
+                        <option value="4" data-icon="{{ url_for('static',filename='images/date_answer.svg') }}">Date
+                            answer
+                        </option>
+                        <option value="5" data-icon="{{ url_for('static',filename='images/time_answer.svg') }}">Time
+                            answer
+                        </option>
+                        <option value="5" data-icon="{{ url_for('static',filename='images/liking_answer.svg') }}">Liking
+                            answer
+                        </option>
+                    </select>
+                    <label>Answer type</label>
+                </div>
+            </form>
+        </div>
     </div>
-    <!-- ADD BUTTON -->
+    <!-- ADD HERE -->
+    <div id="addHere"></div>
+    <!-- ADD QUESTION BUTTON -->
     <div class="row center">
-        <a class="btn-floating btn-large waves-effect waves-light orange darken-2"><i
+        <a type="button" id="addQuestion" class="btn-floating btn-large waves-effect waves-light orange darken-2"><i
                 class="material-icons purple-text text-darken-3">note_add</i></a>
     </div>
 </div>
