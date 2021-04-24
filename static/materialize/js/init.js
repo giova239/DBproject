@@ -11,9 +11,10 @@
         });
         $('.timepicker').timepicker();
         $('select').formSelect();
-        var i = 2;
         $('#addQuestion').click (function(){
+        var i = 2 +$('#addHere').children().length;
             var qForm = $('#questionForm1').clone();
+            qForm.find('input').val('');
             qForm.attr('id','questionForm'+i);
             qForm.find('h6.questionTitle').html('Question #'+i);
             qForm.find('a.questionCloseButton').attr('id','questionCloseButton'+i);
@@ -26,8 +27,7 @@
             });
             qForm.find('select.questionType').attr('id','question_type_'+i);
             $('#addHere').append(qForm);
-            i++;
-            setTimeout(function(){qForm.find('select.questionType').formSelect();},10);
+            setTimeout(function(){qForm.find('select.questionType').formSelect();},350);
         });
     });
   }); // end of document ready
