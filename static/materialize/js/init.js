@@ -17,7 +17,7 @@
             qForm.attr('id','questionForm'+i);
             qForm.find('h6.questionTitle').html('Question #'+i);
             qForm.find('a.questionCloseButton').attr('id','questionCloseButton'+i);
-            qForm.find('a.questionCloseButton').on('click', function(){alert("test")});
+            qForm.find('a.questionCloseButton').on('click', function(){qForm.remove();});
             qForm.find('input.questionText').attr('name', 'question_text_'+i);
             qForm.find('input.questionText').attr('id', 'icon_question_text_'+i);
             qForm.find('label.questionTextLabel').attr('for', 'icon_question_text_'+i);
