@@ -13,19 +13,21 @@
         $('select').formSelect();
         $('#addQuestion').click (function(){
         var i = 2 +$('#addHere').children().length;
-            var qForm = $('#questionForm1').clone();
+            var n = parseInt($('input#questions_number').val());
+            $('input#questions_number').val(n+1);
+            var qForm = $('div#questionForm1').clone();
             qForm.find('input').val('');
             qForm.attr('id','questionForm'+i);
             qForm.find('h6.questionTitle').html('Question #'+i);
             qForm.find('a.questionCloseButton').attr('id','questionCloseButton'+i);
-            qForm.find('a.questionCloseButton').on('click', function(){qForm.remove();});
+            qForm.find('a.questionCloseButton').on('click', function(){qForm.remove();var n = parseInt($('input#questions_number').val());$('input#questions_number').val(n-1);});
             qForm.find('input.questionText').attr('name', 'question_text_'+i);
             qForm.find('input.questionText').attr('id', 'icon_question_text_'+i);
             qForm.find('label.questionTextLabel').attr('for', 'icon_question_text_'+i);
             $.get("static/html/select.html").success(function(data) {
-                qForm.find('div.questionTypeSelectWrapper').html(data)
+                data = data.replace('question_type_2','question_type_'+i);
+                qForm.find('div.questionTypeSelectWrapper').html(data);
             });
-            qForm.find('select.questionType').attr('id','question_type_'+i);
             $('#addHere').append(qForm);
             setTimeout(function(){qForm.find('select.questionType').formSelect();},350);
         });

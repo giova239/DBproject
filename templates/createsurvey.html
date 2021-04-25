@@ -3,78 +3,89 @@
 {% block pagebody %}
 <br>
 <br>
-<div class="row">
-    <!-- HEADING -->
+<form method="POST">
+    <input id="questions_number" name="questions_number" type="hidden" value="1">
     <div class="row">
-        <form class="col s12 m10 l8 offset-s0 offset-m1 offset-l2 purple darken-3">
-            <h5 class="header center orange-text text-darken-3">Create your Survey</h5>
-            <!-- SURVEY TITLE -->
-            <div class="input-field col s10 offset-s1 m8 offset-m2">
-                <i class="material-icons prefix">label_outline</i>
-                <input name="survey_title" id="icon_title" type="text">
-                <label for="icon_title">survey title</label>
-            </div>
-        </form>
-    </div>
-    <!-- QUESTION FORM -->
-    <div id="questionForm1">
+        <!-- HEADING -->
         <div class="row">
-            <form class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 deep-orange lighten-5">
-                <!-- REMOVE QUESTION BUTTON -->
-                <a id="questionCloseButton1"
-                   class="questionCloseButton right btn-floating btn-small waves-effect waves-light orange darken-2"
-                   style="margin-top: 10px;"><i
-                        class="material-icons purple-text text-darken-3">close</i></a>
-                <!-- QUESTION NUMBER -->
-                <h6 class="questionTitle header center purple-text text-darken-3">Question #1</h6>
-                <!-- QUESTION TEXT -->
+            <div class="col s12 m10 l8 offset-s0 offset-m1 offset-l2 purple darken-3">
+                <h5 class="header center orange-text text-darken-3">Create your Survey</h5>
+                <!-- SURVEY TITLE -->
                 <div class="input-field col s10 offset-s1 m8 offset-m2">
                     <i class="material-icons prefix">label_outline</i>
-                    <input class="questionText" name="question_text_1" id="icon_question_text_1" type="text">
-                    <label class="questionTextLabel" for="icon_question_text_1">question text</label>
+                    <input name="survey_title" id="icon_title" type="text">
+                    <label for="icon_title">survey title</label>
                 </div>
-                <!-- QUESTION TYPE -->
-                <div class="questionTypeSelectWrapper input-field col s8 offset-s2 m6 offset-m3">
-                    <select id="question_type_1" class="questionType">
-                        <option value="" disabled selected>Choose the answer type</option>
-                        <option value="1" data-icon="{{ url_for('static',filename='images/single_answer.svg') }}"
-                                style="color:#4a148c;">Multiple answer (One selectable option) <i
-                                class="material-icons right">done</i></option>
-                        <option value="2" data-icon="{{ url_for('static',filename='images/multiple_answer.svg') }}">
-                            Multiple
-                            answer (Multiple selectable options)
-                        </option>
-                        <option value="3" data-icon="{{ url_for('static',filename='images/text_answer.svg') }}">Text
-                            answer
-                        </option>
-                        <option value="4" data-icon="{{ url_for('static',filename='images/date_answer.svg') }}">Date
-                            answer
-                        </option>
-                        <option value="5" data-icon="{{ url_for('static',filename='images/time_answer.svg') }}">Time
-                            answer
-                        </option>
-                        <option value="5" data-icon="{{ url_for('static',filename='images/liking_answer.svg') }}">Liking
-                            answer
-                        </option>
-                    </select>
-                    <label>Answer type</label>
+                <!-- ERROR-MESSAGE -->
+                {% if error %}
+                <div class="container">
+                    <h6 class="center red-text text-darken-2">{{error}}</h6>
                 </div>
-            </form>
+                {% endif %}
+            </div>
+        </div>
+        <!-- QUESTION FORM -->
+        <div id="questionForm1">
+            <div class="row">
+                <div class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 deep-orange lighten-5">
+                    <!-- REMOVE QUESTION BUTTON -->
+                    <a id="questionCloseButton1"
+                       class="questionCloseButton right btn-floating btn-small waves-effect waves-light orange darken-2"
+                       style="margin-top: 10px;"><i
+                            class="material-icons purple-text text-darken-3">close</i></a>
+                    <!-- QUESTION NUMBER -->
+                    <h6 class="questionTitle header center purple-text text-darken-3">Question #1</h6>
+                    <!-- QUESTION TEXT -->
+                    <div class="input-field col s10 offset-s1 m8 offset-m2">
+                        <i class="material-icons prefix">label_outline</i>
+                        <input class="questionText" name="question_text_1" id="icon_question_text_1" type="text">
+                        <label class="questionTextLabel" for="icon_question_text_1">question text</label>
+                    </div>
+                    <!-- QUESTION TYPE -->
+                    <div class="questionTypeSelectWrapper input-field col s8 offset-s2 m6 offset-m3">
+                        <select name="question_type_1" class="questionType">
+                            <option value="" disabled selected>Choose the answer type</option>
+                            <option value="1" data-icon="{{ url_for('static',filename='images/single_answer.svg') }}"
+                                    style="color:#4a148c;">Multiple answer (One selectable option) <i
+                                    class="material-icons right">done</i></option>
+                            <option value="2" data-icon="{{ url_for('static',filename='images/multiple_answer.svg') }}">
+                                Multiple
+                                answer (Multiple selectable options)
+                            </option>
+                            <option value="3" data-icon="{{ url_for('static',filename='images/text_answer.svg') }}">Text
+                                answer
+                            </option>
+                            <option value="4" data-icon="{{ url_for('static',filename='images/date_answer.svg') }}">Date
+                                answer
+                            </option>
+                            <option value="5" data-icon="{{ url_for('static',filename='images/time_answer.svg') }}">Time
+                                answer
+                            </option>
+                            <option value="5" data-icon="{{ url_for('static',filename='images/liking_answer.svg') }}">
+                                Liking
+                                answer
+                            </option>
+                        </select>
+                        <label>Answer type</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ADD HERE -->
+        <div id="addHere"></div>
+        <!-- ADD QUESTION BUTTON -->
+        <div class="row center">
+            <a type="button" id="addQuestion" class="btn-floating btn-large waves-effect waves-light orange darken-2"><i
+                    class="material-icons purple-text text-darken-3">note_add</i></a>
+        </div>
+        <!-- CREATE SURVEY -->
+        <div class="col s4 offset-s4 offset-m7 offset-l8">
+            <button id="create_survey_  button" type="submit" method="POST"
+                    class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4">
+                create survey<i class="material-icons right">send</i>
+            </button>
         </div>
     </div>
-    <!-- ADD HERE -->
-    <div id="addHere"></div>
-    <!-- ADD QUESTION BUTTON -->
-    <div class="row center">
-        <a type="button" id="addQuestion" class="btn-floating btn-large waves-effect waves-light orange darken-2"><i
-                class="material-icons purple-text text-darken-3">note_add</i></a>
-    </div>
-    <!-- CREATE SURVEY -->
-    <div class="col s4 offset-s4 offset-m7 offset-l8">
-        <button class="btn waves-effect waves-light" type="submit" name="action">CREATE SURVEY
-            <i class="material-icons right">send</i>
-        </button>
-    </div>
-</div>
+</form>
 <br>
 {% endblock %}

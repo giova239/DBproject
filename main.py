@@ -1,4 +1,5 @@
 import sqlalchemy.exc
+import werkzeug.exceptions
 from flask import Flask, render_template, redirect, url_for, request, make_response
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from sqlalchemy import create_engine
@@ -93,7 +94,6 @@ def logout():
 @app.route('/registration', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        print("POSTED")
         # taking data from the form
         username = request.form['register_username']
         mail = request.form['register_email']
@@ -164,12 +164,25 @@ def profile():
         return redirect(url_for('login'))
 
 
-@app.route('/createsurvey')
+@app.route('/createsurvey', methods=['GET', 'POST'])
 def createsurvey():
-    if current_user.is_authenticated:
-        return make_response(render_template('createsurvey.html', user=current_user.user, text="domanda di prova?"))
+    if request.method == 'POST':
+        title = request.form['survey_title']
+        questions_texts = []
+        questions_options = []
+        try:
+            for i in range(1, int(request.form['questions_number'])+1):
+                questions_texts.append(request.form['question_text_' + str(i)])
+                questions_options.append(request.form['question_type_' + str(i)])
+                print('Question #' + str(i) + ' -> ' + questions_texts[i-1] + ' WITH ' + questions_options[i-1] + '\n')
+        except (werkzeug.exceptions.BadRequestKeyError):
+            return make_response(render_template('createsurvey.html', user=current_user.user, error="missing parameters"    ))
+        return redirect(url_for('route'))
     else:
-        return redirect(url_for('login'))
+        if current_user.is_authenticated:
+            return make_response(render_template('createsurvey.html', user=current_user.user))
+        else:
+            return redirect(url_for('login'))
 
 
 @app.route('/textquestion')
@@ -200,7 +213,7 @@ def singlemultiplequestion():
 
 @app.route('/multiplequestion')
 def multiplequestion():
-    return render_template('multiplequestion.html'  , text="domanda di prova?", opt1="risposta opt1",
+    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
                            opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
 
