@@ -171,12 +171,14 @@ def createsurvey():
         questions_texts = []
         questions_options = []
         try:
-            for i in range(1, int(request.form['questions_number'])+1):
+            for i in range(1, int(request.form['questions_number']) + 1):
                 questions_texts.append(request.form['question_text_' + str(i)])
                 questions_options.append(request.form['question_type_' + str(i)])
-                print('Question #' + str(i) + ' -> ' + questions_texts[i-1] + ' WITH ' + questions_options[i-1] + '\n')
+                print('Question #' + str(i) + ' -> ' + questions_texts[i - 1] + ' WITH ' + questions_options[
+                    i - 1] + '\n')
         except (werkzeug.exceptions.BadRequestKeyError):
-            return make_response(render_template('createsurvey.html', user=current_user.user, error="missing parameters"    ))
+            return make_response(
+                render_template('createsurvey.html', user=current_user.user, error="missing parameters"))
         return redirect(url_for('route'))
     else:
         if current_user.is_authenticated:
