@@ -218,6 +218,10 @@ def multiplequestion():
     return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
                            opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
+@app.route('/yoursurvey')
+def survey():
+    return render_template('survey.html', title = "titolo")
+
 
 # ----------------- DEBUG PAGES -----------------
 
