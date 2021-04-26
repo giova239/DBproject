@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+<br>
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 orange darken-3">
+        <p class="header center white-text text-darken-2">Survey created correctly</p>
+    </form>
+</div>
+
+
+<div class="center-align">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4">
+      <a class="waves-effect waves-light btn" onclick="copyToClipboard()">Share</a>
+    </form>
+
+    <script>
+    function copyToClipboard(text) {
+    var inputc = document.body.appendChild(document.createElement("input"));
+    inputc.value = window.location.href;
+    inputc.focus();
+    inputc.select();
+    document.execCommand('copy');
+    inputc.parentNode.removeChild(inputc);
+    alert("URL Copied.");
+    }
+    </script>
+
+</div>
+<br>
+{% endblock %}

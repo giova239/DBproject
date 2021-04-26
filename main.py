@@ -179,7 +179,7 @@ def createsurvey():
         except (werkzeug.exceptions.BadRequestKeyError):
             return make_response(
                 render_template('createsurvey.html', user=current_user.user, error="missing parameters"))
-        return redirect(url_for('route'))
+        return redirect(url_for('surveyCreated'))
     else:
         if current_user.is_authenticated:
             return make_response(render_template('createsurvey.html', user=current_user.user))
@@ -221,6 +221,10 @@ def multiplequestion():
 @app.route('/yoursurvey')
 def survey():
     return render_template('survey.html', title = "titolo")
+
+@app.route('/surveyCreated')
+def surveyCreated():
+    return render_template('surveyCreated.html')
 
 
 # ----------------- DEBUG PAGES -----------------
