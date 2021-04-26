@@ -31,6 +31,10 @@
             $('#addHere').append(qForm);
             setTimeout(function(){qForm.find('select.questionType').formSelect();},350);
         });
+        $("select.questionType").change(function(){
+            var selectedCountry = $(this).children("option:selected").text();
+            alert("You have selected the type - " + selectedCountry);
+        });
     });
   }); // end of document ready
 })(jQuery); // end of jQuery name space
