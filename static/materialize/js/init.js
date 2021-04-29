@@ -1,6 +1,7 @@
 (function($){
   $(function(){
     $(document).ready(function(){
+        //INIZIATIZATION
         $('.sidenav').sidenav();
         $('input#input_text, textarea#textarea2').characterCounter();
         $( '.datepicker' ).datepicker({
@@ -11,6 +12,8 @@
         });
         $('.timepicker').timepicker();
         $('select').formSelect();
+        addSelectChangeListener();
+        //ADDING QUESTIONS
         $('#addQuestion').click (function(){
         var i = 2 +$('#addHere').children().length;
             var n = parseInt($('input#questions_number').val());
@@ -29,12 +32,19 @@
                 qForm.find('div.questionTypeSelectWrapper').html(data);
             });
             $('#addHere').append(qForm);
-            setTimeout(function(){qForm.find('select.questionType').formSelect();},350);
-        });
-        $("select.questionType").change(function(){
-            var selectedCountry = $(this).children("option:selected").text();
-            alert("You have selected the type - " + selectedCountry);
+            setTimeout(function(){qForm.find('select.questionType').formSelect();addSelectChangeListener();},350);
         });
     });
+    //QUESTION TYPE CHANGER
+    function addSelectChangeListener(){
+        $("select.questionType").change(function(){
+            var qType = $(this).children("option:selected").val();
+            if( qType == 1 || qType == 2){
+                alert("multipla");
+            }else if (qType == 6){
+                alert("gradimento");
+            }
+        });
+    }
   }); // end of document ready
 })(jQuery); // end of jQuery name space
