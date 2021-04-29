@@ -9,7 +9,7 @@
         <!-- HEADING -->
         <div class="row">
             <div class="col s12 m10 l8 offset-s0 offset-m1 offset-l2 purple darken-3">
-                <h5 class="header center orange-text text-darken-3">Create your Survey</h5>
+                <h4 class="header center orange-text text-darken-3">Create your Survey</h4>
                 <!-- SURVEY TITLE -->
                 <div class="input-field col s10 offset-s1 m8 offset-m2">
                     <i class="material-icons prefix">label_outline</i>
@@ -35,7 +35,7 @@
                             class="material-icons purple-text text-darken-3">close</i></a>
 
                     <!-- QUESTION NUMBER -->
-                    <h6 class="questionTitle header center purple-text text-darken-3">Question #1</h6>
+                    <h5 class="questionTitle header center purple-text text-darken-3">Question #1</h5>
                     <!-- QUESTION TEXT -->
                     <div class="input-field col s10 offset-s1 m8 offset-m2">
                         <i class="material-icons prefix">label_outline</i>
@@ -44,7 +44,7 @@
                     </div>
                     <!-- QUESTION TYPE -->
                     <div class="questionTypeSelectWrapper input-field col s8 offset-s2 m6 offset-m3">
-                        <select name="question_type_1" class="questionType">
+                        <select id="question_type_1" name="question_type_1" class="questionType">
                             <option value="" disabled selected>Choose the answer type</option>
                             <option value="1" data-icon="{{ url_for('static',filename='images/single_answer.svg') }}"
                                     style="color:#4a148c;">Multiple answer (One selectable option)<i
@@ -57,12 +57,14 @@
                         </select>
                         <label>Answer type</label>
                     </div>
+                    <!-- QUESTION OPTIONS -->
+                    <div id="putOptions1Here" class="questionOptions row"></div>
                 </div>
             </div>
         </div>
 
-        <!-- ADD HERE -->
-        <div id="addHere"></div>
+        <!-- ADD QUESTION HERE -->
+        <div id="addQuestionHere"></div>
         <!-- ADD QUESTION BUTTON -->
         <div class="row center">
             <a type="button" id="addQuestion" class="btn-floating btn-large waves-effect waves-light orange darken-2"><i

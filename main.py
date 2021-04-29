@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# TODO: survey creation (options dynamic creation, liking range dynamic creation)
+# TODO: COMPLETE python iteration on createSurvey and DATABASE population
 # TODO: improve private area (add My Surveys, share link, check results with charts)
 # TODO: survey compilation
 # TODO: user discrimination on all pages
