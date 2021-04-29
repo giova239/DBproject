@@ -48,11 +48,12 @@
                 $.get("static/html/options.html").success(function(data) {
                     data = data.replace('addOptionHereForQuestion1','addOptionHereForQuestion'+qNumber);
                     data = data.replace('addOptionToQuestion1','addOptionToQuestion'+qNumber);
+                    data = data.replace('removeOptionToQuestion1','removeOptionToQuestion'+qNumber);
                     data = data.replaceAll('option_1_q1', 'option_1_q'+qNumber)
                     optDiv.html(data);
                 });
-                //ADD OPTION BUTTON LISTENER
                 setTimeout(function(){
+                //ADD OPTION BUTTON LISTENER
                 optDiv.find('a#addOptionToQuestion'+qNumber).click (function(){
                 var optForm = $('div#option_1_q'+qNumber).clone();
                 optForm.find('input').val('');
@@ -64,7 +65,15 @@
                 $('#addOptionHereForQuestion'+qNumber).append(optForm);
                 $('input#input_text, textarea#textarea2').characterCounter();
                 optNumber++;
-                });},350);
+                });
+                //REMOVE OPTION BUTTON LISTENER
+                optDiv.find('a#removeOptionToQuestion'+qNumber).click (function(){
+                    if(optNumber>2){
+                        $('div#option_'+(optNumber-1)+'_q'+qNumber).remove();
+                        optNumber--;
+                    }
+                });
+                },350);
             }else if (qType == 6){
                 $.get("static/html/liking.html").success(function(data) {
                     data = data.replaceAll('_q1', '_q'+qNumber)
