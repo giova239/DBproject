@@ -116,7 +116,7 @@ def register():
                                     # registration
                                     connection = engine.connect()
                                     connection.execute(
-                                        "INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s)",
+                                        "INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s);",
                                         username, generate_password_hash(password), mail, birth_date)
                                     return redirect(url_for('registrationCompleted'))
                                 except (TypeError, sqlalchemy.exc.DataError):
