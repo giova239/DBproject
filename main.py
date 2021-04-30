@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# TODO: COMPLETE python iteration on createSurvey and DATABASE population
+# TODO: make query for createSurvey
 # TODO: improve private area (add My Surveys, share link, check results with charts)
 # TODO: survey compilation
 # TODO: user discrimination on all pages
@@ -168,15 +168,28 @@ def profile():
 def createsurvey():
     if request.method == 'POST':
         title = request.form['survey_title']
+        print(title)
         questions_texts = []
+        questions_types = []
         questions_options = []
         try:
             for i in range(1, int(request.form['questions_number']) + 1):
                 questions_texts.append(request.form['question_text_' + str(i)])
-                questions_options.append(request.form['question_type_' + str(i)])
-                print('Question #' + str(i) + ' -> ' + questions_texts[i - 1] + ' WITH ' + questions_options[
-                    i - 1] + '\n')
-        except (werkzeug.exceptions.BadRequestKeyError):
+                questions_types.append(request.form['question_type_' + str(i)])
+                print('Question #' + str(i) + ' -> ' + questions_texts[i - 1] + ' WITH TYPE ' + questions_types[i - 1])
+                if (int(questions_types[i - 1]) == 1) or (int(questions_types[i - 1]) == 2):
+                    options = []
+                    for j in range(1, int(request.form['options_number_q'+str(i)]) + 1):
+                        options.append(request.form['option_'+str(j)+'_q'+str(i)])
+                    questions_options.append(options)
+                    print('option list:')
+                    print(questions_options[i-1])
+                elif int(questions_types[i - 1]) == 6:
+                    options = [request.form['min_q'+str(i)], request.form['max_q'+str(i)]]
+                    questions_options.append(options)
+                    print('min,max:')
+                    print(questions_options[i - 1])
+        except werkzeug.exceptions.BadRequestKeyError:
             return make_response(
                 render_template('createsurvey.html', user=current_user.user, error="missing parameters"))
         return redirect(url_for('surveyCreated'))
@@ -218,9 +231,11 @@ def multiplequestion():
     return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
                            opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
+
 @app.route('/yoursurvey')
 def survey():
-    return render_template('survey.html', title = "titolo")
+    return render_template('survey.html', title="titolo")
+
 
 @app.route('/surveyCreated')
 def surveyCreated():
