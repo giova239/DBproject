@@ -263,6 +263,41 @@ ALTER SEQUENCE "DBquestionario"."Question_id_question_seq" OWNED BY "DBquestiona
 
 
 --
+-- Name: Range; Type: TABLE; Schema: DBquestionario; Owner: postgres
+--
+
+CREATE TABLE "DBquestionario"."Range" (
+    id_range bigint NOT NULL,
+    min integer NOT NULL,
+    max integer NOT NULL,
+    referred_question bigint NOT NULL
+);
+
+
+ALTER TABLE "DBquestionario"."Range" OWNER TO postgres;
+
+--
+-- Name: Range_id_range_seq; Type: SEQUENCE; Schema: DBquestionario; Owner: postgres
+--
+
+CREATE SEQUENCE "DBquestionario"."Range_id_range_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "DBquestionario"."Range_id_range_seq" OWNER TO postgres;
+
+--
+-- Name: Range_id_range_seq; Type: SEQUENCE OWNED BY; Schema: DBquestionario; Owner: postgres
+--
+
+ALTER SEQUENCE "DBquestionario"."Range_id_range_seq" OWNED BY "DBquestionario"."Range".id_range;
+
+
+--
 -- Name: Survey; Type: TABLE; Schema: DBquestionario; Owner: postgres
 --
 
@@ -393,6 +428,13 @@ ALTER TABLE ONLY "DBquestionario"."Question" ALTER COLUMN id_question SET DEFAUL
 
 
 --
+-- Name: Range id_range; Type: DEFAULT; Schema: DBquestionario; Owner: postgres
+--
+
+ALTER TABLE ONLY "DBquestionario"."Range" ALTER COLUMN id_range SET DEFAULT nextval('"DBquestionario"."Range_id_range_seq"'::regclass);
+
+
+--
 -- Name: Survey id_survey; Type: DEFAULT; Schema: DBquestionario; Owner: postgres
 --
 
@@ -416,6 +458,12 @@ ALTER TABLE ONLY "DBquestionario"."User" ALTER COLUMN id_user SET DEFAULT nextva
 -- Data for Name: AnswerType; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
 --
 
+INSERT INTO "DBquestionario"."AnswerType" VALUES (1, 'Multiple answer (One selectable option)');
+INSERT INTO "DBquestionario"."AnswerType" VALUES (2, 'Multiple answer (Multiple selectable options)');
+INSERT INTO "DBquestionario"."AnswerType" VALUES (3, 'Text answer');
+INSERT INTO "DBquestionario"."AnswerType" VALUES (4, 'Date answer');
+INSERT INTO "DBquestionario"."AnswerType" VALUES (5, 'Time answer');
+INSERT INTO "DBquestionario"."AnswerType" VALUES (6, 'Liking answer');
 
 
 --
@@ -461,6 +509,12 @@ ALTER TABLE ONLY "DBquestionario"."User" ALTER COLUMN id_user SET DEFAULT nextva
 
 
 --
+-- Data for Name: Range; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
+--
+
+
+
+--
 -- Data for Name: Survey; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
 --
 
@@ -489,7 +543,7 @@ INSERT INTO "DBquestionario"."User" VALUES (10, 'admin', 'pbkdf2:sha256:150000$H
 -- Name: AnswerType_id_answer_type_seq; Type: SEQUENCE SET; Schema: DBquestionario; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"DBquestionario"."AnswerType_id_answer_type_seq"', 1, false);
+SELECT pg_catalog.setval('"DBquestionario"."AnswerType_id_answer_type_seq"', 6, true);
 
 
 --
@@ -518,6 +572,13 @@ SELECT pg_catalog.setval('"DBquestionario"."Filling_id_filling_seq"', 1, false);
 --
 
 SELECT pg_catalog.setval('"DBquestionario"."Question_id_question_seq"', 1, false);
+
+
+--
+-- Name: Range_id_range_seq; Type: SEQUENCE SET; Schema: DBquestionario; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"DBquestionario"."Range_id_range_seq"', 1, false);
 
 
 --
@@ -604,6 +665,14 @@ ALTER TABLE ONLY "DBquestionario"."MultipleAnswer"
 
 ALTER TABLE ONLY "DBquestionario"."Question"
     ADD CONSTRAINT "Question_pkey" PRIMARY KEY (id_question);
+
+
+--
+-- Name: Range Range_pkey; Type: CONSTRAINT; Schema: DBquestionario; Owner: postgres
+--
+
+ALTER TABLE ONLY "DBquestionario"."Range"
+    ADD CONSTRAINT "Range_pkey" PRIMARY KEY (id_range);
 
 
 --
@@ -732,6 +801,14 @@ ALTER TABLE ONLY "DBquestionario"."Question"
 
 ALTER TABLE ONLY "DBquestionario"."Question"
     ADD CONSTRAINT "Question_type_fkey" FOREIGN KEY (type) REFERENCES "DBquestionario"."AnswerType"(id_answer_type);
+
+
+--
+-- Name: Range Range_referred_question_fkey; Type: FK CONSTRAINT; Schema: DBquestionario; Owner: postgres
+--
+
+ALTER TABLE ONLY "DBquestionario"."Range"
+    ADD CONSTRAINT "Range_referred_question_fkey" FOREIGN KEY (referred_question) REFERENCES "DBquestionario"."Question"(id_question);
 
 
 --
