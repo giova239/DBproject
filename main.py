@@ -1,5 +1,5 @@
-import sqlalchemy.exc
 import werkzeug.exceptions
+import sqlalchemy.exc
 from flask import Flask, render_template, redirect, url_for, request, make_response
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from sqlalchemy import create_engine
