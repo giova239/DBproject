@@ -470,6 +470,14 @@ INSERT INTO "DBquestionario"."AnswerType" VALUES (6, 'Liking answer');
 -- Data for Name: Choice; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
 --
 
+INSERT INTO "DBquestionario"."Choice" VALUES (1, 'opzione di prova 2.1', 5);
+INSERT INTO "DBquestionario"."Choice" VALUES (2, 'opzione di prova 2.2', 5);
+INSERT INTO "DBquestionario"."Choice" VALUES (3, 'opzione di prova 2.3', 5);
+INSERT INTO "DBquestionario"."Choice" VALUES (4, 'opzione di prova 2.4', 5);
+INSERT INTO "DBquestionario"."Choice" VALUES (5, 'opzione di prova 1.1', 6);
+INSERT INTO "DBquestionario"."Choice" VALUES (6, 'opzione di prova 1.2', 6);
+INSERT INTO "DBquestionario"."Choice" VALUES (7, 'opzione di prova 1.3', 6);
+INSERT INTO "DBquestionario"."Choice" VALUES (8, 'opzione di prova 1.4', 6);
 
 
 --
@@ -506,18 +514,26 @@ INSERT INTO "DBquestionario"."AnswerType" VALUES (6, 'Liking answer');
 -- Data for Name: Question; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
 --
 
+INSERT INTO "DBquestionario"."Question" VALUES (1, 'domanda di prova 6', NULL, 6);
+INSERT INTO "DBquestionario"."Question" VALUES (2, 'domanda di prova 5', 1, 5);
+INSERT INTO "DBquestionario"."Question" VALUES (3, 'domanda di prova 4', 2, 4);
+INSERT INTO "DBquestionario"."Question" VALUES (4, 'domanda di prova 3', 3, 3);
+INSERT INTO "DBquestionario"."Question" VALUES (5, 'domanda di prova 2', 4, 2);
+INSERT INTO "DBquestionario"."Question" VALUES (6, 'domanda di prova 1', 5, 1);
 
 
 --
 -- Data for Name: Range; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
 --
 
+INSERT INTO "DBquestionario"."Range" VALUES (1, 0, 10, 1);
 
 
 --
 -- Data for Name: Survey; Type: TABLE DATA; Schema: DBquestionario; Owner: postgres
 --
 
+INSERT INTO "DBquestionario"."Survey" VALUES (1, 'questionario di prova', 10, 6);
 
 
 --
@@ -557,7 +573,7 @@ SELECT pg_catalog.setval('"DBquestionario"."Answer_id_answer_seq"', 1, false);
 -- Name: Choice_id_choice_seq; Type: SEQUENCE SET; Schema: DBquestionario; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"DBquestionario"."Choice_id_choice_seq"', 1, false);
+SELECT pg_catalog.setval('"DBquestionario"."Choice_id_choice_seq"', 8, true);
 
 
 --
@@ -571,21 +587,21 @@ SELECT pg_catalog.setval('"DBquestionario"."Filling_id_filling_seq"', 1, false);
 -- Name: Question_id_question_seq; Type: SEQUENCE SET; Schema: DBquestionario; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"DBquestionario"."Question_id_question_seq"', 1, false);
+SELECT pg_catalog.setval('"DBquestionario"."Question_id_question_seq"', 6, true);
 
 
 --
 -- Name: Range_id_range_seq; Type: SEQUENCE SET; Schema: DBquestionario; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"DBquestionario"."Range_id_range_seq"', 1, false);
+SELECT pg_catalog.setval('"DBquestionario"."Range_id_range_seq"', 1, true);
 
 
 --
 -- Name: Survey_id_survey_seq; Type: SEQUENCE SET; Schema: DBquestionario; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"DBquestionario"."Survey_id_survey_seq"', 1, false);
+SELECT pg_catalog.setval('"DBquestionario"."Survey_id_survey_seq"', 1, true);
 
 
 --

@@ -38,7 +38,7 @@ class User(UserMixin):
 def load_user(user_id):
     connection = engine.connect()
     rs = connection.execute(
-        "SELECT id_user, username, hashed_password FROM \"DBquestionario\".\"User\" WHERE id_user = %s;", user_id)
+        'SELECT id_user, username, hashed_password FROM "DBquestionario"."User" WHERE id_user = %s;', user_id)
     user = rs.fetchone()
     connection.close()
     if user:
@@ -50,7 +50,7 @@ def load_user(user_id):
 def get_user_by_username(username):
     connection = engine.connect()
     rs = connection.execute(
-        "SELECT id_user, username, hashed_password FROM \"DBquestionario\".\"User\" WHERE username = %s;", username)
+        'SELECT id_user, username, hashed_password FROM "DBquestionario"."User" WHERE username = %s;', username)
     user = rs.fetchone()
     connection.close()
     if user:
@@ -116,7 +116,7 @@ def register():
                                     # registration
                                     connection = engine.connect()
                                     connection.execute(
-                                        "INSERT INTO \"DBquestionario\".\"User\"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s);",
+                                        'INSERT INTO "DBquestionario"."User"(username,hashed_password,email,birth_date) VALUES (%s,%s,%s,%s);',
                                         username, generate_password_hash(password), mail, birth_date)
                                     return redirect(url_for('registrationCompleted'))
                                 except (TypeError, sqlalchemy.exc.DataError):
@@ -142,7 +142,7 @@ def register():
 
 @app.route('/registrationCompleted')
 def registrationCompleted():
-    return render_template('registrationCompleted.html', user=current_user.user)
+    return render_template('registrationCompleted.html')
 
 
 # ----------------- PAGES -----------------
@@ -168,30 +168,60 @@ def profile():
 def createsurvey():
     if request.method == 'POST':
         title = request.form['survey_title']
+        question_number = int(request.form['questions_number'])
         print(title)
         questions_texts = []
         questions_types = []
         questions_options = []
+        questions_options_number = []
+
+        # GETTING FORMS INFO
         try:
-            for i in range(1, int(request.form['questions_number']) + 1):
+            for i in range(1, question_number + 1):
                 questions_texts.append(request.form['question_text_' + str(i)])
                 questions_types.append(request.form['question_type_' + str(i)])
                 print('Question #' + str(i) + ' -> ' + questions_texts[i - 1] + ' WITH TYPE ' + questions_types[i - 1])
                 if (int(questions_types[i - 1]) == 1) or (int(questions_types[i - 1]) == 2):
                     options = []
-                    for j in range(1, int(request.form['options_number_q'+str(i)]) + 1):
-                        options.append(request.form['option_'+str(j)+'_q'+str(i)])
+                    questions_options_number.append(int(request.form['options_number_q' + str(i)]))
+                    for j in range(1, questions_options_number[i-1] + 1):
+                        options.append(request.form['option_' + str(j) + '_q' + str(i)])
                     questions_options.append(options)
                     print('option list:')
-                    print(questions_options[i-1])
+                    print(questions_options[i - 1])
                 elif int(questions_types[i - 1]) == 6:
-                    options = [request.form['min_q'+str(i)], request.form['max_q'+str(i)]]
+                    options = [request.form['min_q' + str(i)], request.form['max_q' + str(i)]]
                     questions_options.append(options)
+                    questions_options_number.append(2)
                     print('min,max:')
                     print(questions_options[i - 1])
+                else:
+                    questions_options.append([])
+                    questions_options_number.append(0)
         except werkzeug.exceptions.BadRequestKeyError:
             return make_response(
                 render_template('createsurvey.html', user=current_user.user, error="missing parameters"))
+
+        # POPULATING DATABASE
+        connection = engine.connect()
+        last_id = None
+        print("question number: " + str(question_number))
+        for i in range((question_number - 1), -1, -1):
+            # inserting questions
+            last_id = connection.execute(
+                'INSERT INTO "DBquestionario"."Question"(text,next,type) VALUES(%s,%s,%s) RETURNING id_question;',
+                questions_texts[i], last_id, questions_types[i]).fetchone()[0]
+            if (int(questions_types[i]) == 1) or (int(questions_types[i]) == 2):
+                for j in range(0, questions_options_number[i]):
+                    # inserting options
+                    connection.execute('INSERT INTO "DBquestionario"."Choice"(text,referred_question) VALUES(%s,%s);',
+                                       questions_options[i][j], last_id)
+            elif int(questions_types[i]) == 6:
+                connection.execute('INSERT INTO "DBquestionario"."Range"(min,max,referred_question) VALUES(%s,%s,%s);',
+                                   questions_options[i][0], questions_options[i][1], last_id)
+        # inserting survey
+        connection.execute('INSERT INTO "DBquestionario"."Survey"(title, creator, first_question) VALUES( %s, %s, %s);',
+                           title, current_user.id, last_id)
         return redirect(url_for('surveyCreated'))
     else:
         if current_user.is_authenticated:
@@ -247,7 +277,7 @@ def surveyCreated():
 @app.route('/testquery')
 def testquery():
     connection = engine.connect()
-    users = connection.execute("SELECT * FROM \"DBquestionario\".\"User\";")
+    users = connection.execute('SELECT * FROM "DBquestionario"."User";')
     s = ""
 
     for user in users:
