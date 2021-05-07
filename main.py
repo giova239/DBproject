@@ -232,6 +232,7 @@ def createsurvey():
 
 @app.route('/textquestion')
 def textquestion():
+
     return render_template('textquestion.html', text="domanda di prova?")
 
 
@@ -285,3 +286,70 @@ def testquery():
 
     return s
     # return "fatto";
+
+
+class DBConnection:
+    def __init__(self, db_instance):
+        self.db_engine = create_engine('postgresql://postgres:admin@localhost:5432/postgres')
+        self.db_engine.connect()
+
+    def read(self, statement):
+        #Executes a read query and returns a list of dicts, whose keys are column names.
+        data = self.db_engine.execute(statement).fetchall()
+        results = []
+
+        if len(data) == 0:
+            return results
+
+        # results from sqlalchemy are returned as a list of tuples; this procedure converts it into a list of dicts
+        for row_number, row in enumerate(data):
+            results.append({})
+            for column_number, value in enumerate(row):
+                results[row_number][row.keys()[column_number]] = value
+
+        return results
+
+def query_to_dict(ret):
+    if ret is not None:
+        return [{key: value for key, value in row.items()} for row in ret if row is not None]
+    else:
+        return [{}]
+
+@app.route('/questions')
+def questions():
+
+    connection = engine.connect()
+    surv = [100]
+    quest = ""
+    i = 0
+    q = connection.execute("SELECT * FROM \"DBquestionario\".\"Survey\" WHERE id_survey=1;").fetchall()
+
+    res = query_to_dict(q)
+
+    return res[0]
+
+    """
+    for x in q:0
+        quest += str(x)
+
+    surv[i] = quest[1]
+    id = surv[0]
+
+    q = connection.execute("SELECT next FROM \"DBquestionario\".\"Question\" WHERE id_question = %s ", str(id))
+
+    for x in q:
+        quest += str(x)
+
+    while True:
+        q = connection.execute("SELECT next FROM \"DBquestionario\".\"Question\" WHERE id_question = %s ", str(id))
+        for x in q:
+            quest += str(x)
+        if q is None:
+            break
+        i += 1
+        print(quest)
+
+
+    return quest
+
+    """
