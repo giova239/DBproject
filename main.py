@@ -164,6 +164,41 @@ def profile():
         return redirect(url_for('login'))
 
 
+@app.route('/textquestion')
+def textquestion():
+    return render_template('textquestion.html', text="domanda di prova?")
+
+
+@app.route('/datequestion')
+def datequestion():
+    return render_template('datequestion.html', text="domanda di prova?")
+
+
+@app.route('/timequestion')
+def timequestion():
+    return render_template('timequestion.html', text="domanda di prova?")
+
+
+@app.route('/rangequestion')
+def rangequestion():
+    return render_template('rangequestion.html', text="domanda di prova?")
+
+
+@app.route('/singlemultiplequestion')
+def singlemultiplequestion():
+    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
+
+@app.route('/multiplequestion')
+def multiplequestion():
+    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
+
+# ----------------- SURVEY CREATION  -----------------
+
+
 @app.route('/createsurvey', methods=['GET', 'POST'])
 def createsurvey():
     if request.method == 'POST':
@@ -184,7 +219,7 @@ def createsurvey():
                 if (int(questions_types[i - 1]) == 1) or (int(questions_types[i - 1]) == 2):
                     options = []
                     questions_options_number.append(int(request.form['options_number_q' + str(i)]))
-                    for j in range(1, questions_options_number[i-1] + 1):
+                    for j in range(1, questions_options_number[i - 1] + 1):
                         options.append(request.form['option_' + str(j) + '_q' + str(i)])
                     questions_options.append(options)
                     print('option list:')
@@ -230,39 +265,6 @@ def createsurvey():
             return redirect(url_for('login'))
 
 
-@app.route('/textquestion')
-def textquestion():
-
-    return render_template('textquestion.html', text="domanda di prova?")
-
-
-@app.route('/datequestion')
-def datequestion():
-    return render_template('datequestion.html', text="domanda di prova?")
-
-
-@app.route('/timequestion')
-def timequestion():
-    return render_template('timequestion.html', text="domanda di prova?")
-
-
-@app.route('/rangequestion')
-def rangequestion():
-    return render_template('rangequestion.html', text="domanda di prova?")
-
-
-@app.route('/singlemultiplequestion')
-def singlemultiplequestion():
-    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
-                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
-
-
-@app.route('/multiplequestion')
-def multiplequestion():
-    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
-                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
-
-
 @app.route('/yoursurvey')
 def survey():
     return render_template('survey.html', title="titolo")
@@ -271,6 +273,23 @@ def survey():
 @app.route('/surveyCreated')
 def surveyCreated():
     return render_template('surveyCreated.html')
+
+
+# ----------------- SURVEY COMPILATION -----------------
+
+@app.route('/compile/<id>')
+def compile(id=None):
+    connection = engine.connect()
+    survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
+    if survey_query is None:
+        return render_template('compileSurvey.html', result='SURVEY NOT FOUND')
+    else:
+        question_list = []
+        questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;', survey_query.first_question).fetchone()
+        while questions_query is not None:
+            question_list.append(questions_query.text)
+            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;', questions_query.next).fetchone()
+        return render_template('compileSurvey.html', id=id, result=survey_query, questionsList=question_list)
 
 
 # ----------------- DEBUG PAGES -----------------
@@ -288,13 +307,15 @@ def testquery():
     # return "fatto";
 
 
+# ----------------- QUARTA STUFF -----------------
+
 class DBConnection:
     def __init__(self, db_instance):
         self.db_engine = create_engine('postgresql://postgres:admin@localhost:5432/postgres')
         self.db_engine.connect()
 
     def read(self, statement):
-        #Executes a read query and returns a list of dicts, whose keys are column names.
+        # Executes a read query and returns a list of dicts, whose keys are column names.
         data = self.db_engine.execute(statement).fetchall()
         results = []
 
@@ -309,15 +330,16 @@ class DBConnection:
 
         return results
 
+
 def query_to_dict(ret):
     if ret is not None:
         return [{key: value for key, value in row.items()} for row in ret if row is not None]
     else:
         return [{}]
 
+
 @app.route('/questions')
 def questions():
-
     connection = engine.connect()
     surv = [100]
     quest = ""
