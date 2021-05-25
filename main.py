@@ -6,10 +6,8 @@ from sqlalchemy import create_engine
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# TODO: make query for createSurvey
-# TODO: improve private area (add My Surveys, share link, check results with charts)
-# TODO: survey compilation
-# TODO: user discrimination on all pages
+# TODO: improve private area (ANALYTICS AND SETTING)
+# TODO: implement survey compilation
 
 # setup FLASK
 app = Flask(__name__)
@@ -169,10 +167,32 @@ def mySurveys():
     if current_user.is_authenticated:
         connection = engine.connect()
         user_surveys = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE creator=%s;', current_user.id)
-        survey_list = []
+        survey_id_list = []
+        survey_title_list = []
         for srv in user_surveys:
-            survey_list.append('Survey#' + str(srv.id_survey) + ': ' + srv.title)
-        return make_response(render_template('mySurveys.html', surveysList=survey_list, user=current_user.user))
+            survey_id_list.append(srv.id_survey)
+            survey_title_list.append(srv.title)
+        return make_response(render_template('mySurveys.html', surveyIdList=survey_id_list, surveyTitleList=survey_title_list, user=current_user.user))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/profile/mySurveys/<id>')
+def my_survey(id=None):
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;', id, current_user.id).fetchone()
+        if survey_query is None:
+            return render_template('mySurvey.html', title='SURVEY NOT FOUND')
+        else:
+            question_list = []
+            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                 survey_query.first_question).fetchone()
+            while questions_query is not None:
+                question_list.append(questions_query.text)
+                questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                     questions_query.next).fetchone()
+        return make_response(render_template('mySurvey.html', id=id, title=survey_query.title, questionsList=question_list))
     else:
         return redirect(url_for('login'))
 
@@ -254,21 +274,38 @@ def surveyCreated():
 
 # ----------------- SURVEY COMPILATION -----------------
 
+@app.route('/survey/<id>')
+def survey(id=None):
+    connection = engine.connect()
+    survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
+    if survey_query is None:
+        return render_template('survey.html', title='SURVEY NOT FOUND')
+    else:
+        questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                             survey_query.first_question).fetchone()
+        n = 0
+        while questions_query is not None:
+            n = n + 1
+            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                 questions_query.next).fetchone()
+        return render_template('survey.html', id=id, title=survey_query.title, questionNumber=n)
+
+
 @app.route('/compile/<id>')
 def compile(id=None):
     connection = engine.connect()
     survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
     if survey_query is None:
-        return render_template('compileSurvey.html', result='SURVEY NOT FOUND')
+        return render_template('compilesurvey.html', title='SURVEY NOT FOUND')
     else:
         question_list = []
         questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                              survey_query.first_question).fetchone()
         while questions_query is not None:
-            question_list.append(questions_query.text)
+            question_list.append(questions_query)
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                  questions_query.next).fetchone()
-        return render_template('compileSurvey.html', id=id, result=survey_query, questionsList=question_list)
+        return render_template('compilesurvey.html', id=id, title=survey_query.title, questionList=question_list)
 
 
 # ----------------- QUESTION TYPES PAGES -----------------

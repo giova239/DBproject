@@ -8,15 +8,14 @@
         <h3 class="orange-text text-darken-3 center">My Surveys</h3>
 
         {% if user %}
-        <h6 class="center"> {{user}} this are the surveys you created:</h6>
-        <br>
+        <h6 class="center white-text"> {{user}} this are the surveys you created:</h6>
         {% endif %}
 
-        {% if surveysList %}
+        {% if surveyIdList %}
         <br>
         <div class="collection">
-            {% for survey in surveysList %}
-            <a href="/profile/mySurveys/" class="collection-item purple-text text-darken-2">{{survey}}</a>
+            {% for id in surveyIdList%}
+            <a href="/profile/mySurveys/{{ id }}" class="collection-item purple-text text-darken-2">{{ surveyTitleList[loop.index0]}}</a>
             {% endfor %}
         </div>
         {% endif %}

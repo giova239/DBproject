@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3">
+
+        {% if title %}
+        <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
+        {% endif %}
+
+        {% if id %}
+        <h6 class="center white-text">survey #{{ id }}</h6>
+        {% endif %}
+
+        {% if questionNumber %}
+        <br>
+        <div class="divider"></div>
+        <br>
+        <h6 class="center white-text">this survey has {{ questionNumber }} questions</h6>
+        {% endif %}
+        <br>
+        <div class="row center">
+            <a id="logout-button" href="/compile/{{ id }}" class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4">
+            Start Compilation<i class="material-icons right">edit</i>
+        </a>
+        </div>
+    </form>
+</div>
+
+<br>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3">
+
+        {% if title %}
+        <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
+        {% endif %}
+
+        {% if id %}
+        <h6 class="center white-text">survey #{{ id }}</h6>
+        {% endif %}
+
+        {% if questionsList %}
+        <br>
+        <div class="collection">
+            {% for question in questionsList %}
+            <a class="collection-item purple-text text-darken-2">{{question}}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="row center">
+            <a class="btn-floating btn-large waves-effect waves-light orange darken-3 center"
+               onclick="copyToClipboard()"><i
+                    class="material-icons purple-text text-darken-3">content_copy</i>
+            </a>
+        </div>
+        <div class="right">
+            <a href="/profile/mySurveys"
+               class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
+                My Surveys<i class="material-icons left">keyboard_backspace</i>
+            </a>
+        </div>
+        <br>
+        <br>
+    </form>
+</div>
+
+<br>
+
+<script>
+    function copyToClipboard(text) {
+        var inputc = document.body.appendChild(document.createElement("input"));
+        inputc.value = "http://localhost:5000/survey/{{ id }}";
+        inputc.focus();
+        inputc.select();
+        document.execCommand('copy');
+        inputc.parentNode.removeChild(inputc);
+    }
+</script>
+{% endblock %}

@@ -11,7 +11,7 @@
         {% endif %}
         <div class="divider purple darken-3"></div>
         <div class="collection">
-            <a href="/profile/mySurveys/{{ surveyID }}" class="collection-item purple-text text-darken-2">Open Survey</a>
+            <a href="/survey/{{ surveyID }}" class="collection-item purple-text text-darken-2">Open Survey</a>
             <a href="/profile/mySurveys" class="collection-item purple-text text-darken-2">My Surveys</a>
         </div>
     </form>
@@ -21,21 +21,20 @@
 <div class="center-align">
     <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4">
         <a class="btn-floating btn-large waves-effect waves-light orange darken-3" onclick="copyToClipboard()"><i
-                class="material-icons purple-text text-darken-3">share</i></a>
+                class="material-icons purple-text text-darken-3">content_copy</i></a>
     </form>
-
-    <script>
-    function copyToClipboard(text) {
-    var inputc = document.body.appendChild(document.createElement("input"));
-    inputc.value = "http://localhost:5000/compile/{{ surveyID }}";
-    inputc.focus();
-    inputc.select();
-    document.execCommand('copy');
-    inputc.parentNode.removeChild(inputc);
-    }
-
-    </script>
-
 </div>
+
 <br>
+
+<script>
+    function copyToClipboard(text) {
+        var inputc = document.body.appendChild(document.createElement("input"));
+        inputc.value = "http://localhost:5000/survey/{{ surveyID }}";
+        inputc.focus();
+        inputc.select();
+        document.execCommand('copy');
+        inputc.parentNode.removeChild(inputc);
+    }
+</script>
 {% endblock %}
