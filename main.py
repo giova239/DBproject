@@ -164,36 +164,17 @@ def profile():
         return redirect(url_for('login'))
 
 
-@app.route('/textquestion')
-def textquestion():
-    return render_template('textquestion.html', text="domanda di prova?")
-
-
-@app.route('/datequestion')
-def datequestion():
-    return render_template('datequestion.html', text="domanda di prova?")
-
-
-@app.route('/timequestion')
-def timequestion():
-    return render_template('timequestion.html', text="domanda di prova?")
-
-
-@app.route('/rangequestion')
-def rangequestion():
-    return render_template('rangequestion.html', text="domanda di prova?")
-
-
-@app.route('/singlemultiplequestion')
-def singlemultiplequestion():
-    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
-                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
-
-
-@app.route('/multiplequestion')
-def multiplequestion():
-    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
-                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+@app.route('/profile/mySurveys')
+def mySurveys():
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        user_surveys = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE creator=%s;', current_user.id)
+        survey_list = []
+        for srv in user_surveys:
+            survey_list.append('Survey#' + str(srv.id_survey) + ': ' + srv.title)
+        return make_response(render_template('mySurveys.html', surveysList=survey_list, user=current_user.user))
+    else:
+        return redirect(url_for('login'))
 
 
 # ----------------- SURVEY CREATION  -----------------
@@ -255,9 +236,10 @@ def createsurvey():
                 connection.execute('INSERT INTO "DBquestionario"."Range"(min,max,referred_question) VALUES(%s,%s,%s);',
                                    questions_options[i][0], questions_options[i][1], last_id)
         # inserting survey
-        connection.execute('INSERT INTO "DBquestionario"."Survey"(title, creator, first_question) VALUES( %s, %s, %s);',
-                           title, current_user.id, last_id)
-        return redirect(url_for('surveyCreated'))
+        survey_id = connection.execute(
+            'INSERT INTO "DBquestionario"."Survey"(title, creator, first_question) VALUES(%s,%s,%s) RETURNING id_survey;',
+            title, current_user.id, last_id)
+        return redirect(url_for('surveyCreated', surveyID=survey_id.fetchone().id_survey))
     else:
         if current_user.is_authenticated:
             return make_response(render_template('createsurvey.html', user=current_user.user))
@@ -265,14 +247,9 @@ def createsurvey():
             return redirect(url_for('login'))
 
 
-@app.route('/yoursurvey')
-def survey():
-    return render_template('survey.html', title="titolo")
-
-
 @app.route('/surveyCreated')
 def surveyCreated():
-    return render_template('surveyCreated.html')
+    return render_template('surveyCreated.html', surveyID=request.args['surveyID'])
 
 
 # ----------------- SURVEY COMPILATION -----------------
@@ -285,11 +262,48 @@ def compile(id=None):
         return render_template('compileSurvey.html', result='SURVEY NOT FOUND')
     else:
         question_list = []
-        questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;', survey_query.first_question).fetchone()
+        questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                             survey_query.first_question).fetchone()
         while questions_query is not None:
             question_list.append(questions_query.text)
-            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;', questions_query.next).fetchone()
+            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                 questions_query.next).fetchone()
         return render_template('compileSurvey.html', id=id, result=survey_query, questionsList=question_list)
+
+
+# ----------------- QUESTION TYPES PAGES -----------------
+
+
+@app.route('/textquestion')
+def textquestion():
+    return render_template('textquestion.html', text="domanda di prova?")
+
+
+@app.route('/datequestion')
+def datequestion():
+    return render_template('datequestion.html', text="domanda di prova?")
+
+
+@app.route('/timequestion')
+def timequestion():
+    return render_template('timequestion.html', text="domanda di prova?")
+
+
+@app.route('/rangequestion')
+def rangequestion():
+    return render_template('rangequestion.html', text="domanda di prova?")
+
+
+@app.route('/singlemultiplequestion')
+def singlemultiplequestion():
+    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
+
+@app.route('/multiplequestion')
+def multiplequestion():
+    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
 
 # ----------------- DEBUG PAGES -----------------
@@ -305,73 +319,3 @@ def testquery():
 
     return s
     # return "fatto";
-
-
-# ----------------- QUARTA STUFF -----------------
-
-class DBConnection:
-    def __init__(self, db_instance):
-        self.db_engine = create_engine('postgresql://postgres:admin@localhost:5432/postgres')
-        self.db_engine.connect()
-
-    def read(self, statement):
-        # Executes a read query and returns a list of dicts, whose keys are column names.
-        data = self.db_engine.execute(statement).fetchall()
-        results = []
-
-        if len(data) == 0:
-            return results
-
-        # results from sqlalchemy are returned as a list of tuples; this procedure converts it into a list of dicts
-        for row_number, row in enumerate(data):
-            results.append({})
-            for column_number, value in enumerate(row):
-                results[row_number][row.keys()[column_number]] = value
-
-        return results
-
-
-def query_to_dict(ret):
-    if ret is not None:
-        return [{key: value for key, value in row.items()} for row in ret if row is not None]
-    else:
-        return [{}]
-
-
-@app.route('/questions')
-def questions():
-    connection = engine.connect()
-    surv = [100]
-    quest = ""
-    i = 0
-    q = connection.execute("SELECT * FROM \"DBquestionario\".\"Survey\" WHERE id_survey=1;").fetchall()
-
-    res = query_to_dict(q)
-
-    return res[0]
-
-    """
-    for x in q:0
-        quest += str(x)
-
-    surv[i] = quest[1]
-    id = surv[0]
-
-    q = connection.execute("SELECT next FROM \"DBquestionario\".\"Question\" WHERE id_question = %s ", str(id))
-
-    for x in q:
-        quest += str(x)
-
-    while True:
-        q = connection.execute("SELECT next FROM \"DBquestionario\".\"Question\" WHERE id_question = %s ", str(id))
-        for x in q:
-            quest += str(x)
-        if q is None:
-            break
-        i += 1
-        print(quest)
-
-
-    return quest
-
-    """

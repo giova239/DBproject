@@ -8,10 +8,16 @@
         <h3 class="orange-text text-darken-3 center">Private Area</h3>
 
         {% if user %}
-        <h6> welcome to your private area: {{user}}!</h6>
+        <h6 class="center"> welcome to your private area {{user}}!</h6>
+        <br>
+        <div class="collection">
+            <a href="/profile/mySurveys" class="collection-item purple-text text-darken-2">My Surveys</a>
+            <a href="/profile/analytics" class="collection-item purple-text text-darken-2">Analytics</a>
+            <a href="/profile/settings" class="collection-item purple-text text-darken-2">Settings</a>
+        </div>
         <a id="logout-button" href="/logout"
            class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
-            logout<i class="material-icons right">send</i>
+            logout<i class="material-icons right">exit_to_app</i>
         </a>
         <br><br>
         {% endif %}
