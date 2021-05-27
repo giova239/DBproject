@@ -174,9 +174,7 @@ def mySurveys():
         for srv in user_surveys:
             survey_id_list.append(srv.id_survey)
             survey_title_list.append(srv.title)
-        return make_response(
-            render_template('mySurveys.html', surveyIdList=survey_id_list, surveyTitleList=survey_title_list,
-                            user=current_user.user))
+        return make_response(render_template('mySurveys.html', surveyIdList=survey_id_list, surveyTitleList=survey_title_list, user=current_user.user))
     else:
         return redirect(url_for('login'))
 
@@ -185,8 +183,7 @@ def mySurveys():
 def my_survey(id=None):
     if current_user.is_authenticated:
         connection = engine.connect()
-        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
-                                          id, current_user.id).fetchone()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;', id, current_user.id).fetchone()
         if survey_query is None:
             return render_template('mySurvey.html', title='SURVEY NOT FOUND')
         else:
@@ -197,8 +194,7 @@ def my_survey(id=None):
                 question_list.append(questions_query.text)
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
-        return make_response(
-            render_template('mySurvey.html', id=id, title=survey_query.title, questionsList=question_list))
+        return make_response(render_template('mySurvey.html', id=id, title=survey_query.title, questionsList=question_list))
     else:
         return redirect(url_for('login'))
 
@@ -312,6 +308,41 @@ def compile(id=None):
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                  questions_query.next).fetchone()
         return render_template('compilesurvey.html', id=id, title=survey_query.title, questionList=question_list)
+
+
+# ----------------- QUESTION TYPES PAGES -----------------
+
+
+@app.route('/textquestion')
+def textquestion():
+    return render_template('textquestion.html', text="domanda di prova?")
+
+
+@app.route('/datequestion')
+def datequestion():
+    return render_template('datequestion.html', text="domanda di prova?")
+
+
+@app.route('/timequestion')
+def timequestion():
+    return render_template('timequestion.html', text="domanda di prova?")
+
+
+@app.route('/rangequestion')
+def rangequestion():
+    return render_template('rangequestion.html', text="domanda di prova?")
+
+
+@app.route('/singlemultiplequestion')
+def singlemultiplequestion():
+    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+
+
+@app.route('/multiplequestion')
+def multiplequestion():
+    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
+                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
 
 
 # ----------------- DEBUG PAGES -----------------

@@ -2,9 +2,8 @@
 
 {% block pagebody %}
 <br>
-
 <div class="row">
-    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 orange darken-3">
 
         {% if title %}
         <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
@@ -20,7 +19,31 @@
         <br>
         <div class="collection">
             {% for question in questionList %}
-                <a class="collection-item purple-text text-darken-2">{{question}}</a>
+                <a class="collection-item grey darken-2 purple-text text-darken-2">
+                {% with text = question.text %}
+                    {% if question.type == 1 %}
+                        {% include 'singlemultiplequestion.html' %}
+                    {% else %}
+                        {% if question.type == 2 %}
+                            {% include 'multiplequestion.html' %}
+                        {% else %}
+                            {% if question.type == 3 %}
+                                {% include 'textquestion.html' %}
+                            {% else %}
+                                {% if question.type == 4 %}
+                                    {% include 'datequestion.html' %}
+                                {% else %}
+                                    {% if question.type == 5 %}
+                                        {% include 'timequestion.html' %}
+                                    {% else %}
+                                        {% include 'rangequestion.html' %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+                </a><br>
             {% endfor %}
         </div>
         {% endif %}
