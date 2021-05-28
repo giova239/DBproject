@@ -4,15 +4,15 @@
 <br>
 <br>
 <div class="row">
-    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 orange darken-3">
-        <h4 class="header center white-text">Survey created correctly</h4>
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3">
+        <h4 class="header center orange-text text-darken-3">Survey created correctly</h4>
         {% if surveyID %}
         <h6 class="header center white-text">SurveyID: {{ surveyID }}</h6>
         {% endif %}
         <div class="divider purple darken-3"></div>
         <div class="collection">
-            <a href="/survey/{{ surveyID }}" class="collection-item purple-text text-darken-2">Open Survey</a>
-            <a href="/profile/mySurveys" class="collection-item purple-text text-darken-2">My Surveys</a>
+            <a href="/survey/{{ surveyID }}" class="collection-item white-text grey darken-4"><i class="small material-icons left teal-text text-lighten-3">edit</i>Compile Survey</a>
+            <a href="/profile/mySurveys" class="collection-item white-text grey darken-4"><i class="small material-icons left teal-text text-lighten-3">assignment</i>My Surveys</a>
         </div>
     </form>
 </div>

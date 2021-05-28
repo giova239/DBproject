@@ -14,35 +14,36 @@
           media="screen,projection"/>
 </head>
 
-<body>
+<body class="grey darken-4">
 <!-- NAVBAR -->
 <nav class="purple darken-3" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="/"
-                                          class="brand-logo white-text orange-text text-darken-2"
+                                          class="brand-logo teal-text text-lighten-3"
                                           style="font-weight: 500">Survey.com</a>
         <!-- MENU for PC/TABLET -->
         <ul class="right hide-on-med-and-down">
-            <li><a href="/createsurvey"><i class="small material-icons left orange-text text-darken-2">insert_chart</i>Create
+            <li><a href="/createsurvey"><i class="small material-icons left teal-text text-lighten-3">insert_chart</i>Create
                 your survey</a></li>
             {% if user %}
-                <li><a href="/login"><i class="small material-icons left orange-text text-darken-2">person</i>{{user}}</a></li>
+            <li><a href="/login"><i class="small material-icons left teal-text text-lighten-3">person</i>{{user}}</a>
+            </li>
             {% else %}
-                <li><a href="/login"><i class="small material-icons left orange-text text-darken-2">person</i>Login</a></li>
+            <li><a href="/login"><i class="small material-icons left teal-text text-lighten-3">person</i>Login</a></li>
             {% endif %}
-            <li><a href="#footer"><i class="small material-icons left orange-text text-darken-2">language</i>About
+            <li><a href="#footer"><i class="small material-icons left teal-text text-lighten-3">language</i>About
                 us</a></li>
         </ul>
         <!-- MENU for MOBILE -->
-        <ul id="nav-mobile" class="sidenav">
-            <li><a href="/createsurvey"><i class="small material-icons">insert_chart</i>Create your survey</a></li>
+        <ul id="nav-mobile" class="sidenav purple darken-3">
+            <li><a href="/createsurvey" class="white-text"><i class="small material-icons teal-text text-lighten-3">insert_chart</i>Create your survey</a></li>
             {% if user %}
-                <li><a href="/login"><i class="small material-icons">person</i>{{user}}</a></li>
+            <li><a href="/login" class="white-text"><i class="small material-icons teal-text text-lighten-3">person</i>{{user}}</a></li>
             {% else %}
-                <li><a href="/login"><i class="small material-icons">person</i>Login</a></li>
+            <li><a href="/login" class="white-text"><i class="small material-icons teal-text text-lighten-3">person</i>Login</a></li>
             {% endif %}
-            <li><a href="#footer"><i class="small material-icons">language</i>About us</a></li>
+            <li><a href="#footer" class="white-text"><i class="small material-icons teal-text text-lighten-3">language</i>About us</a></li>
         </ul>
-        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger orange-text text-darken-3"><i class="material-icons">menu</i></a>
     </div>
 </nav>
 <main>
@@ -55,20 +56,24 @@
         <div class="row">
             <!-- ABOUT US -->
             <div class="col l8 s12">
-                <h5 class="orange-text text-darken-2">About Us</h5>
+                <h5 class="teal-text text-lighten-3">About Us</h5>
                 <p class="grey-text text-lighten-4">We are a team of college students working on this project for the
                     database 2 course. Thank you for visiting out website.</p>
             </div>
             <!-- REALIZED WITH -->
             <div class="col l4 s12">
-                <h5 class="orange-text text-darken-2">This website was realized with:</h5>
+                <h5 class="teal-text text-lighten-3">This website was realized with:</h5>
                 <ul>
-                    <li>Programming Language -> <a class="Purple-text" href="https://www.python.org/">Python</a></li>
-                    <li>Web Framework -> <a class="Purple-text"
+                    <li>Programming Language -> <a class="orange-text text-darken-3" href="https://www.python.org/">Python</a>
+                    </li>
+                    <li>Web Framework -> <a class="orange-text text-darken-3"
                                             href="https://flask.palletsprojects.com/en/1.1.x/">Flask</a></li>
-                    <li>Database API -> <a class="Purple-text" href="https://www.sqlalchemy.org/">SQLalchemy</a></li>
-                    <li>DBMS -> <a class="Purple-text" href="https://www.postgresql.org/">PostgreSQL</a></li>
-                    <li>Administration tool -> <a class="Purple-text" href="https://github.com/phppgadmin/phppgadmin">Phppgadmin</a>
+                    <li>Database API -> <a class="orange-text text-darken-3" href="https://www.sqlalchemy.org/">SQLalchemy</a>
+                    </li>
+                    <li>DBMS -> <a class="orange-text text-darken-3" href="https://www.postgresql.org/">PostgreSQL</a>
+                    </li>
+                    <li>Administration tool -> <a class="orange-text text-darken-3"
+                                                  href="https://github.com/phppgadmin/phppgadmin">Phppgadmin</a>
                     </li>
                 </ul>
             </div>
@@ -77,7 +82,7 @@
     <!-- MaterializeCSS credits -->
     <div class="footer-copyright">
         <div class="container">
-            Frontend made with <a class="Purple-text" href="http://materializecss.com">MaterializeCSS</a>
+            Frontend made with <a class="text-bold orange-text text-darken-3" href="http://materializecss.com">MaterializeCSS</a>
         </div>
     </div>
 </footer>

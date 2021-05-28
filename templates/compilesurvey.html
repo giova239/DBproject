@@ -3,10 +3,10 @@
 {% block pagebody %}
 <br>
 <div class="row">
-    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 orange darken-2">
+    <form class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 purple darken-3 z-depth-4">
 
         {% if title %}
-        <h3 class="purple-text text-darken-3 center">{{ title }}</h3>
+        <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
         {% endif %}
 
         {% if id %}
@@ -17,11 +17,11 @@
         <br>
         <div class="divider"></div>
         <br>
+        {% for question in questionList %}
         <div class="collection">
-            {% for question in questionList %}
-                <a class="collection-item grey darken-4 purple-text text-darken-2">
-                    <br>
-                    <div class="container">
+            <a class="collection-item grey darken-4">
+                <br>
+                <div class="container">
                     {% if question.text %}
                     <h6 class="header center orange-text text-darken-2">{{question.text}}</h6>
                     {% endif %}
@@ -29,39 +29,49 @@
                     <div class="divider"></div>
                     <br>
                     <div class="container center">
-                    {% with %}
+                        {% with %}
                         {% if question.type == 1 %}
-                            {% set options = optionList[loop.index0] %}
-                            {% include 'singlemultiplequestion.html' %}
+                        {% set options = optionList[loop.index0] %}
+                        {% include 'singlemultiplequestion.html' %}
                         {% else %}
-                            {% if question.type == 2 %}
-                                {% set options = optionList[loop.index0] %}
-                                {% include 'multiplequestion.html' %}
-                            {% else %}
-                                {% if question.type == 3 %}
-                                    {% include 'textquestion.html' %}
-                                {% else %}
-                                    {% if question.type == 4 %}
-                                        {% include 'datequestion.html' %}
-                                    {% else %}
-                                        {% if question.type == 5 %}
-                                            {% include 'timequestion.html' %}
-                                        {% else %}
-                                            {% set options = optionList[loop.index0] %}
-                                            {% include 'rangequestion.html' %}
-                                        {% endif %}
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
+                        {% if question.type == 2 %}
+                        {% set options = optionList[loop.index0] %}
+                        {% include 'multiplequestion.html' %}
+                        {% else %}
+                        {% if question.type == 3 %}
+                        {% include 'textquestion.html' %}
+                        {% else %}
+                        {% if question.type == 4 %}
+                        {% include 'datequestion.html' %}
+                        {% else %}
+                        {% if question.type == 5 %}
+                        {% include 'timequestion.html' %}
+                        {% else %}
+                        {% set options = optionList[loop.index0] %}
+                        {% include 'rangequestion.html' %}
                         {% endif %}
-                    {% endwith %}
-                    </div></div><br></a><br>
-            {% endfor %}
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <br>
+            </a>
         </div>
+        {% endfor %}
         {% endif %}
+        <br>
+        <!-- SUBMIT COMPILATION -->
+        <div class="container center">
+            <button id="submit_survey_button" type="submit" method="POST"
+                    class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4">
+                submit compilation<i class="material-icons right">send</i>
+            </button>
+        </div>
         <br>
     </form>
 </div>
-
 <br>
 {% endblock %}

@@ -9,7 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # set FLASK_ENV=development & set FLASK_APP=main.py & flask run
 
 # TODO: improve private area (ANALYTICS AND SETTING)
-# TODO: implement survey compilation
+# TODO: survey compilation insert into db
+# TODO: profile>my surveys>id change type number to icon
 
 # setup FLASK
 app = Flask(__name__)
@@ -171,11 +172,23 @@ def mySurveys():
         user_surveys = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE creator=%s;', current_user.id)
         survey_id_list = []
         survey_title_list = []
+        survey_question_numbers_list = []
+
         for srv in user_surveys:
             survey_id_list.append(srv.id_survey)
             survey_title_list.append(srv.title)
+            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                 srv.first_question).fetchone()
+            n = 0
+            while questions_query is not None:
+                n = n + 1
+                questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                     questions_query.next).fetchone()
+            survey_question_numbers_list.append(n)
         return make_response(
-            render_template('mySurveys.html', surveyIdList=survey_id_list, surveyTitleList=survey_title_list,
+            render_template('mySurveys.html', surveyIdList=survey_id_list,
+                            surveyQuestionNumberList=survey_question_numbers_list,
+                            surveyTitleList=survey_title_list,
                             user=current_user.user))
     else:
         return redirect(url_for('login'))
@@ -194,11 +207,12 @@ def my_survey(id=None):
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                  survey_query.first_question).fetchone()
             while questions_query is not None:
-                question_list.append(questions_query.text)
+                question_list.append(questions_query)
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
         return make_response(
-            render_template('mySurvey.html', user=current_user.user, id=id, title=survey_query.title, questionsList=question_list))
+            render_template('mySurvey.html', user=current_user.user, id=id, title=survey_query.title,
+                            questionsList=question_list))
     else:
         return redirect(url_for('login'))
 
@@ -295,9 +309,11 @@ def survey(id=None):
                 n = n + 1
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
-            return render_template('survey.html', user=current_user.user, id=id, title=survey_query.title, questionNumber=n)
+            return render_template('survey.html', user=current_user.user, id=id, title=survey_query.title,
+                                   questionNumber=n)
     else:
         return redirect(url_for('login'))
+
 
 @app.route('/compile/<id>')
 def compile(id=None):
@@ -328,7 +344,8 @@ def compile(id=None):
 
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
-            return render_template('compilesurvey.html', user=current_user.user, id=id, title=survey_query.title, questionList=question_list,
+            return render_template('compilesurvey.html', user=current_user.user, id=id, title=survey_query.title,
+                                   questionList=question_list,
                                    optionList=option_list)
     else:
         return redirect(url_for('login'))
