@@ -174,7 +174,9 @@ def mySurveys():
         for srv in user_surveys:
             survey_id_list.append(srv.id_survey)
             survey_title_list.append(srv.title)
-        return make_response(render_template('mySurveys.html', surveyIdList=survey_id_list, surveyTitleList=survey_title_list, user=current_user.user))
+        return make_response(
+            render_template('mySurveys.html', surveyIdList=survey_id_list, surveyTitleList=survey_title_list,
+                            user=current_user.user))
     else:
         return redirect(url_for('login'))
 
@@ -183,7 +185,8 @@ def mySurveys():
 def my_survey(id=None):
     if current_user.is_authenticated:
         connection = engine.connect()
-        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;', id, current_user.id).fetchone()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
+                                          id, current_user.id).fetchone()
         if survey_query is None:
             return render_template('mySurvey.html', title='SURVEY NOT FOUND')
         else:
@@ -194,7 +197,8 @@ def my_survey(id=None):
                 question_list.append(questions_query.text)
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
-        return make_response(render_template('mySurvey.html', id=id, title=survey_query.title, questionsList=question_list))
+        return make_response(
+            render_template('mySurvey.html', id=id, title=survey_query.title, questionsList=question_list))
     else:
         return redirect(url_for('login'))
 
@@ -301,13 +305,28 @@ def compile(id=None):
         return render_template('compilesurvey.html', title='SURVEY NOT FOUND')
     else:
         question_list = []
+        option_list = []
         questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                              survey_query.first_question).fetchone()
         while questions_query is not None:
             question_list.append(questions_query)
+            if questions_query.type == 1 or questions_query.type == 2:
+                options_query = connection.execute(
+                    'SELECT * FROM "DBquestionario"."Choice" WHERE referred_question=%s;',
+                    questions_query.id_question).fetchall()
+                option_list.append(options_query)
+            elif questions_query.type == 6:
+                options_query = connection.execute(
+                    'SELECT * FROM "DBquestionario"."Range" WHERE referred_question=%s;',
+                    questions_query.id_question).fetchone()
+                option_list.append(options_query)
+            else:
+                option_list.append([])
+
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                  questions_query.next).fetchone()
-        return render_template('compilesurvey.html', id=id, title=survey_query.title, questionList=question_list)
+        return render_template('compilesurvey.html', id=id, title=survey_query.title, questionList=question_list,
+                               optionList=option_list)
 
 
 # ----------------- QUESTION TYPES PAGES -----------------

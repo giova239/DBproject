@@ -1,102 +1,23 @@
 <br>
-<div class="row">
-    <form class="col s12 m10 l8 offset-s0 offset-m1 offset-l2 orange darken-3">
-        <!-- QUESTION TEXT -->
-        {% if text %}
-        <p class="header center white-text text-darken-2">{{text}}</p>
-        {% endif %}
-    </form>
-
-    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4">
-        {% if opt1 %}
+<div class="container">
+    <!-- QUESTION TEXT -->
+    {% if text %}
+    <h6 class="header center orange-text text-darken-2">{{text}}</h6>
+    {% endif %}
+    <br>
+    <div class="divider"></div>
+    <br>
+    <div class="container center">
+        {% if options %}
+        {% for o in options %}
         <p>
             <label>
                 <input type="checkbox"/>
-                <span>{{opt1}}</span>
+                <span>{{o.text}}</span>
             </label>
         </p>
+        {% endfor %}
         {% endif %}
-
-        {% if opt2 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt2}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt3 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt3}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt4 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt4}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt5 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt5}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt6 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt6}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt7 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt7}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt8 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt8}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt9 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt9}}</span>
-            </label>
-        </p>
-        {% endif %}
-
-        {% if opt10 %}
-        <p>
-            <label>
-                <input type="checkbox"/>
-                <span>{{opt10}}</span>
-            </label>
-        </p>
-        {% endif %}
-    </form>
+    </div>
 </div>
 <br>
