@@ -1,18 +1,5 @@
-<br>
-<div class="container">
-    <!-- QUESTION TEXT -->
-    {% if text %}
-    <h6 class="header center orange-text text-darken-2">{{text}}</h6>
-    {% endif %}
-    <br>
-    <div class="divider"></div>
-    <br>
-    <div class="container center">
-        {% if options %}
-        <p class="range-field">
-            <input type="range" min="{{ options.min }}" max="{{ options.max }}"/>
-        </p>
-        {% endif %}
-    </div>
-</div>
-<br>
+{% if options %}
+    <p class="range-field">
+        <input type="range" min="{{ options.min }}" max="{{ options.max }}"/>
+    </p>
+{% endif %}

@@ -20,33 +20,42 @@
         <div class="collection">
             {% for question in questionList %}
                 <a class="collection-item grey darken-4 purple-text text-darken-2">
-                {% with text = question.text %}
-                    {% if question.type == 1 %}
-                        {% set options = optionList[loop.index0] %}
-                        {% include 'singlemultiplequestion.html' %}
-                    {% else %}
-                        {% if question.type == 2 %}
+                    <br>
+                    <div class="container">
+                    {% if question.text %}
+                    <h6 class="header center orange-text text-darken-2">{{question.text}}</h6>
+                    {% endif %}
+                    <br>
+                    <div class="divider"></div>
+                    <br>
+                    <div class="container center">
+                    {% with %}
+                        {% if question.type == 1 %}
                             {% set options = optionList[loop.index0] %}
-                            {% include 'multiplequestion.html' %}
+                            {% include 'singlemultiplequestion.html' %}
                         {% else %}
-                            {% if question.type == 3 %}
-                                {% include 'textquestion.html' %}
+                            {% if question.type == 2 %}
+                                {% set options = optionList[loop.index0] %}
+                                {% include 'multiplequestion.html' %}
                             {% else %}
-                                {% if question.type == 4 %}
-                                    {% include 'datequestion.html' %}
+                                {% if question.type == 3 %}
+                                    {% include 'textquestion.html' %}
                                 {% else %}
-                                    {% if question.type == 5 %}
-                                        {% include 'timequestion.html' %}
+                                    {% if question.type == 4 %}
+                                        {% include 'datequestion.html' %}
                                     {% else %}
-                                        {% set options = optionList[loop.index0] %}
-                                        {% include 'rangequestion.html' %}
+                                        {% if question.type == 5 %}
+                                            {% include 'timequestion.html' %}
+                                        {% else %}
+                                            {% set options = optionList[loop.index0] %}
+                                            {% include 'rangequestion.html' %}
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
                         {% endif %}
-                    {% endif %}
-                {% endwith %}
-                </a><br>
+                    {% endwith %}
+                    </div></div><br></a><br>
             {% endfor %}
         </div>
         {% endif %}

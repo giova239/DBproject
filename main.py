@@ -198,7 +198,7 @@ def my_survey(id=None):
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
         return make_response(
-            render_template('mySurvey.html', id=id, title=survey_query.title, questionsList=question_list))
+            render_template('mySurvey.html', user=current_user.user, id=id, title=survey_query.title, questionsList=question_list))
     else:
         return redirect(url_for('login'))
 
@@ -275,93 +275,63 @@ def createsurvey():
 
 @app.route('/surveyCreated')
 def surveyCreated():
-    return render_template('surveyCreated.html', surveyID=request.args['surveyID'])
+    return render_template('surveyCreated.html', surveyID=request.args['surveyID'], user=current_user.user)
 
 
 # ----------------- SURVEY COMPILATION -----------------
 
 @app.route('/survey/<id>')
 def survey(id=None):
-    connection = engine.connect()
-    survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
-    if survey_query is None:
-        return render_template('survey.html', title='SURVEY NOT FOUND')
-    else:
-        questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
-                                             survey_query.first_question).fetchone()
-        n = 0
-        while questions_query is not None:
-            n = n + 1
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
+        if survey_query is None:
+            return render_template('survey.html', title='SURVEY NOT FOUND')
+        else:
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
-                                                 questions_query.next).fetchone()
-        return render_template('survey.html', id=id, title=survey_query.title, questionNumber=n)
-
+                                                 survey_query.first_question).fetchone()
+            n = 0
+            while questions_query is not None:
+                n = n + 1
+                questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                     questions_query.next).fetchone()
+            return render_template('survey.html', user=current_user.user, id=id, title=survey_query.title, questionNumber=n)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/compile/<id>')
 def compile(id=None):
-    connection = engine.connect()
-    survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
-    if survey_query is None:
-        return render_template('compilesurvey.html', title='SURVEY NOT FOUND')
-    else:
-        question_list = []
-        option_list = []
-        questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
-                                             survey_query.first_question).fetchone()
-        while questions_query is not None:
-            question_list.append(questions_query)
-            if questions_query.type == 1 or questions_query.type == 2:
-                options_query = connection.execute(
-                    'SELECT * FROM "DBquestionario"."Choice" WHERE referred_question=%s;',
-                    questions_query.id_question).fetchall()
-                option_list.append(options_query)
-            elif questions_query.type == 6:
-                options_query = connection.execute(
-                    'SELECT * FROM "DBquestionario"."Range" WHERE referred_question=%s;',
-                    questions_query.id_question).fetchone()
-                option_list.append(options_query)
-            else:
-                option_list.append([])
-
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
+        if survey_query is None:
+            return render_template('compilesurvey.html', user=current_user.user, title='SURVEY NOT FOUND')
+        else:
+            question_list = []
+            option_list = []
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
-                                                 questions_query.next).fetchone()
-        return render_template('compilesurvey.html', id=id, title=survey_query.title, questionList=question_list,
-                               optionList=option_list)
+                                                 survey_query.first_question).fetchone()
+            while questions_query is not None:
+                question_list.append(questions_query)
+                if questions_query.type == 1 or questions_query.type == 2:
+                    options_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Choice" WHERE referred_question=%s;',
+                        questions_query.id_question).fetchall()
+                    option_list.append(options_query)
+                elif questions_query.type == 6:
+                    options_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Range" WHERE referred_question=%s;',
+                        questions_query.id_question).fetchone()
+                    option_list.append(options_query)
+                else:
+                    option_list.append([])
 
-
-# ----------------- QUESTION TYPES PAGES -----------------
-
-
-@app.route('/textquestion')
-def textquestion():
-    return render_template('textquestion.html', text="domanda di prova?")
-
-
-@app.route('/datequestion')
-def datequestion():
-    return render_template('datequestion.html', text="domanda di prova?")
-
-
-@app.route('/timequestion')
-def timequestion():
-    return render_template('timequestion.html', text="domanda di prova?")
-
-
-@app.route('/rangequestion')
-def rangequestion():
-    return render_template('rangequestion.html', text="domanda di prova?")
-
-
-@app.route('/singlemultiplequestion')
-def singlemultiplequestion():
-    return render_template('singlemultiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
-                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
-
-
-@app.route('/multiplequestion')
-def multiplequestion():
-    return render_template('multiplequestion.html', text="domanda di prova?", opt1="risposta opt1",
-                           opt2="risposta opt2", opt3="risposta opt3", opt4="risposta opt4", opt5="risposta opt5")
+                questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                     questions_query.next).fetchone()
+            return render_template('compilesurvey.html', user=current_user.user, id=id, title=survey_query.title, questionList=question_list,
+                                   optionList=option_list)
+    else:
+        return redirect(url_for('login'))
 
 
 # ----------------- DEBUG PAGES -----------------
