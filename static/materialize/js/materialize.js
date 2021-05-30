@@ -9670,7 +9670,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     },
 
     autoClose: false, // auto close when minute is selected
-    twelveHour: true, // change to 12 hour AM/PM clock from 24 hour
+    twelveHour: false, // change to 12 hour AM/PM clock from 24 hour
     vibrate: true, // vibrate the device when dragging clock hand
 
     // Callbacks

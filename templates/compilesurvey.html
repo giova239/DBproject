@@ -3,7 +3,7 @@
 {% block pagebody %}
 <br>
 <div class="row">
-    <form class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 purple darken-3 z-depth-4">
+    <form class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 purple darken-3 z-depth-4" method="POST">
 
         {% if title %}
         <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
@@ -14,6 +14,7 @@
         {% endif %}
 
         {% if questionList %}
+        <input name="questions_number" type="hidden" value="{{ questionList|length }}">
         <br>
         <div class="divider"></div>
         <br>
@@ -28,7 +29,7 @@
                     <br>
                     <div class="divider"></div>
                     <br>
-                    <div class="container center">
+                    <div id="question{{ loop.index0 }}" class="container center">
                         {% with %}
                         {% if question.type == 1 %}
                         {% set options = optionList[loop.index0] %}

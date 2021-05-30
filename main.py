@@ -1,3 +1,5 @@
+import datetime
+
 import werkzeug.exceptions
 import sqlalchemy.exc
 from flask import Flask, render_template, redirect, url_for, request, make_response
@@ -5,11 +7,11 @@ from flask_login import LoginManager, UserMixin, current_user, login_required, l
 from sqlalchemy import create_engine
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 # set FLASK_ENV=development & set FLASK_APP=main.py & flask run
 
-# TODO: improve private area (ANALYTICS AND SETTING)
-# TODO: survey compilation insert into db
+# TODO: improve private area (ANALYTICS SETTINGS and MyFillings)
 # TODO: profile>my surveys>id change type number to icon
 
 # setup FLASK
@@ -222,69 +224,64 @@ def my_survey(id=None):
 
 @app.route('/createsurvey', methods=['GET', 'POST'])
 def createsurvey():
-    if request.method == 'POST':
-        title = request.form['survey_title']
-        question_number = int(request.form['questions_number'])
-        print(title)
-        questions_texts = []
-        questions_types = []
-        questions_options = []
-        questions_options_number = []
+    if current_user.is_authenticated:
+        if request.method == 'POST':
+            title = request.form['survey_title']
+            question_number = int(request.form['questions_number'])
+            questions_texts = []
+            questions_types = []
+            questions_options = []
+            questions_options_number = []
 
-        # GETTING FORMS INFO
-        try:
-            for i in range(1, question_number + 1):
-                questions_texts.append(request.form['question_text_' + str(i)])
-                questions_types.append(request.form['question_type_' + str(i)])
-                print('Question #' + str(i) + ' -> ' + questions_texts[i - 1] + ' WITH TYPE ' + questions_types[i - 1])
-                if (int(questions_types[i - 1]) == 1) or (int(questions_types[i - 1]) == 2):
-                    options = []
-                    questions_options_number.append(int(request.form['options_number_q' + str(i)]))
-                    for j in range(1, questions_options_number[i - 1] + 1):
-                        options.append(request.form['option_' + str(j) + '_q' + str(i)])
-                    questions_options.append(options)
-                    print('option list:')
-                    print(questions_options[i - 1])
-                elif int(questions_types[i - 1]) == 6:
-                    options = [request.form['min_q' + str(i)], request.form['max_q' + str(i)]]
-                    questions_options.append(options)
-                    questions_options_number.append(2)
-                    print('min,max:')
-                    print(questions_options[i - 1])
-                else:
-                    questions_options.append([])
-                    questions_options_number.append(0)
-        except werkzeug.exceptions.BadRequestKeyError:
-            return make_response(
-                render_template('createsurvey.html', user=current_user.user, error="missing parameters"))
+            # GETTING FORMS INFO
+            try:
+                for i in range(1, question_number + 1):
+                    questions_texts.append(request.form['question_text_' + str(i)])
+                    questions_types.append(request.form['question_type_' + str(i)])
+                    if (int(questions_types[i - 1]) == 1) or (int(questions_types[i - 1]) == 2):
+                        options = []
+                        questions_options_number.append(int(request.form['options_number_q' + str(i)]))
+                        for j in range(1, questions_options_number[i - 1] + 1):
+                            options.append(request.form['option_' + str(j) + '_q' + str(i)])
+                        questions_options.append(options)
+                    elif int(questions_types[i - 1]) == 6:
+                        options = [request.form['min_q' + str(i)], request.form['max_q' + str(i)]]
+                        questions_options.append(options)
+                        questions_options_number.append(2)
+                    else:
+                        questions_options.append([])
+                        questions_options_number.append(0)
+            except werkzeug.exceptions.BadRequestKeyError:
+                return make_response(
+                    render_template('createsurvey.html', user=current_user.user, error="missing parameters"))
 
-        # POPULATING DATABASE
-        connection = engine.connect()
-        last_id = None
-        print("question number: " + str(question_number))
-        for i in range((question_number - 1), -1, -1):
-            # inserting questions
-            last_id = connection.execute(
-                'INSERT INTO "DBquestionario"."Question"(text,next,type) VALUES(%s,%s,%s) RETURNING id_question;',
-                questions_texts[i], last_id, questions_types[i]).fetchone()[0]
-            if (int(questions_types[i]) == 1) or (int(questions_types[i]) == 2):
-                for j in range(0, questions_options_number[i]):
-                    # inserting options
-                    connection.execute('INSERT INTO "DBquestionario"."Choice"(text,referred_question) VALUES(%s,%s);',
-                                       questions_options[i][j], last_id)
-            elif int(questions_types[i]) == 6:
-                connection.execute('INSERT INTO "DBquestionario"."Range"(min,max,referred_question) VALUES(%s,%s,%s);',
-                                   questions_options[i][0], questions_options[i][1], last_id)
-        # inserting survey
-        survey_id = connection.execute(
-            'INSERT INTO "DBquestionario"."Survey"(title, creator, first_question) VALUES(%s,%s,%s) RETURNING id_survey;',
-            title, current_user.id, last_id)
-        return redirect(url_for('surveyCreated', surveyID=survey_id.fetchone().id_survey))
-    else:
-        if current_user.is_authenticated:
-            return make_response(render_template('createsurvey.html', user=current_user.user))
+            # POPULATING DATABASE
+            connection = engine.connect()
+            last_id = None
+            for i in range((question_number - 1), -1, -1):
+                # inserting questions
+                last_id = connection.execute(
+                    'INSERT INTO "DBquestionario"."Question"(text,next,type) VALUES(%s,%s,%s) RETURNING id_question;',
+                    questions_texts[i], last_id, questions_types[i]).fetchone()[0]
+                if (int(questions_types[i]) == 1) or (int(questions_types[i]) == 2):
+                    for j in range(0, questions_options_number[i]):
+                        # inserting options
+                        connection.execute(
+                            'INSERT INTO "DBquestionario"."Choice"(text,referred_question) VALUES(%s,%s);',
+                            questions_options[i][j], last_id)
+                elif int(questions_types[i]) == 6:
+                    connection.execute(
+                        'INSERT INTO "DBquestionario"."Range"(min,max,referred_question) VALUES(%s,%s,%s);',
+                        questions_options[i][0], questions_options[i][1], last_id)
+            # inserting survey
+            survey_id = connection.execute(
+                'INSERT INTO "DBquestionario"."Survey"(title, creator, first_question) VALUES(%s,%s,%s) RETURNING id_survey;',
+                title, current_user.id, last_id)
+            return redirect(url_for('surveyCreated', surveyID=survey_id.fetchone().id_survey))
         else:
-            return redirect(url_for('login'))
+            return make_response(render_template('createsurvey.html', user=current_user.user))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/surveyCreated')
@@ -315,40 +312,92 @@ def survey(id=None):
         return redirect(url_for('login'))
 
 
-@app.route('/compile/<id>')
+@app.route('/compile/<id>', methods=['GET', 'POST'])
 def compile(id=None):
     if current_user.is_authenticated:
         connection = engine.connect()
-        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;', id).fetchone()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s;',
+                                          id).fetchone()
         if survey_query is None:
             return render_template('compilesurvey.html', user=current_user.user, title='SURVEY NOT FOUND')
         else:
-            question_list = []
-            option_list = []
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                  survey_query.first_question).fetchone()
-            while questions_query is not None:
-                question_list.append(questions_query)
-                if questions_query.type == 1 or questions_query.type == 2:
-                    options_query = connection.execute(
-                        'SELECT * FROM "DBquestionario"."Choice" WHERE referred_question=%s;',
-                        questions_query.id_question).fetchall()
-                    option_list.append(options_query)
-                elif questions_query.type == 6:
-                    options_query = connection.execute(
-                        'SELECT * FROM "DBquestionario"."Range" WHERE referred_question=%s;',
-                        questions_query.id_question).fetchone()
-                    option_list.append(options_query)
-                else:
-                    option_list.append([])
+            if request.method == 'POST':
+                now = datetime.now()
+                filling_id = connection.execute(
+                    'INSERT INTO "DBquestionario"."Filling"(interviewed_user, referred_survey, filling_date, filling_time) VALUES(%s,%s,%s,%s) RETURNING id_filling;',
+                    current_user.id, id, now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")).fetchone().id_filling
+                while questions_query is not None:
+                    answer_id = connection.execute(
+                        'INSERT INTO "DBquestionario"."Answer"(filling, referred_question) VALUES(%s,%s) RETURNING id_answer;',
+                        filling_id, questions_query.id_question).fetchone().id_answer
+                    # SINGLE MULTIPLE
+                    if questions_query.type == 1:
+                        answer = request.form["group" + str(questions_query.id_question)]
+                        connection.execute(
+                            'INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer, answer_id)
+                    # MULTIPLE
+                    elif questions_query.type == 2:
+                        answers = request.form.getlist("group" + str(questions_query.id_question))
+                        for answer in answers:
+                            connection.execute('INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer, answer_id)
+                    # TEXT
+                    elif questions_query.type == 3:
+                        answer = request.form["textarea" + str(questions_query.id_question)]
+                        connection.execute('INSERT INTO "DBquestionario"."TextAnswer"(answer, text) VALUES(%s,%s)',
+                                           answer_id, answer)
+                    # DATE
+                    elif questions_query.type == 4:
+                        answer = request.form["date" + str(questions_query.id_question)]
+                        connection.execute('INSERT INTO "DBquestionario"."DateAnswer"(answer, date) VALUES(%s,%s)',
+                                           answer_id, answer)
+                    # TIME
+                    elif questions_query.type == 5:
+                        answer = request.form["time" + str(questions_query.id_question)]
+                        connection.execute('INSERT INTO "DBquestionario"."TimeAnswer"(answer, time) VALUES(%s,%s)',
+                                           answer_id, answer + ":00")
+                    # RANGE
+                    elif questions_query.type == 6:
+                        answer = request.form["range" + str(questions_query.id_question)]
+                        connection.execute('INSERT INTO "DBquestionario"."LikingAnswer"(answer, liking) VALUES(%s,%s)',
+                                           answer_id, answer)
 
-                questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
-                                                     questions_query.next).fetchone()
-            return render_template('compilesurvey.html', user=current_user.user, id=id, title=survey_query.title,
-                                   questionList=question_list,
-                                   optionList=option_list)
+                    questions_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                        questions_query.next).fetchone()
+                return redirect(url_for('compilationSubmitted', surveyID=id))
+            else:
+                question_list = []
+                option_list = []
+                while questions_query is not None:
+                    question_list.append(questions_query)
+                    if questions_query.type == 1 or questions_query.type == 2:
+                        options_query = connection.execute(
+                            'SELECT * FROM "DBquestionario"."Choice" WHERE referred_question=%s;',
+                            questions_query.id_question).fetchall()
+                        option_list.append(options_query)
+                    elif questions_query.type == 6:
+                        options_query = connection.execute(
+                            'SELECT * FROM "DBquestionario"."Range" WHERE referred_question=%s;',
+                            questions_query.id_question).fetchone()
+                        option_list.append(options_query)
+                    else:
+                        option_list.append([])
+
+                    questions_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                        questions_query.next).fetchone()
+                return render_template('compilesurvey.html', user=current_user.user, id=id, title=survey_query.title,
+                                       questionList=question_list,
+                                       optionList=option_list)
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/compilationSubmitted')
+def compilationSubmitted():
+    return render_template('compilationSubmitted.html', surveyID=request.args['surveyID'], user=current_user.user)
 
 
 # ----------------- DEBUG PAGES -----------------

@@ -1,5 +1,6 @@
+<input class="qType" type="hidden" value="6">
 {% if options %}
     <p class="range-field">
-        <input type="range" min="{{ options.min }}" max="{{ options.max }}"/>
+        <input name="range{{ question.id_question }}" type="range" min="{{ options.min }}" max="{{ options.max }}"/>
     </p>
 {% endif %}

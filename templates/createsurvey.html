@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block pagebody %}
+<script src="{{ url_for('static',filename='materialize/js/createSurvey.js') }}"></script>
 <br>
 <br>
 <form method="POST">
@@ -72,7 +73,7 @@
         </div>
         <!-- CREATE SURVEY -->
         <div class="col s4 offset-s4 offset-m7 offset-l8">
-            <button id="create_survey_  button" type="submit" method="POST"
+            <button id="create_survey_button" type="submit" method="POST"
                     class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4">
                 create survey<i class="material-icons right">send</i>
             </button>

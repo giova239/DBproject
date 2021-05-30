@@ -1,9 +1,10 @@
+<input class="qType" type="hidden" value="1">
 {% if options %}
     {% for o in options %}
         <p>
             <label>
-                <input name="group1" type="radio"/>
-                <span>{{o.text}}</span>
+                <input name="group{{ question.id_question }}" type="radio" value="{{ o.id_choice }}"/>
+                <span>{{ o.text }}</span>
             </label>
         </p>
     {% endfor %}

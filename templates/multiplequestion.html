@@ -1,8 +1,9 @@
+<input class="qType" type="hidden" value="2">
 {% if options %}
     {% for o in options %}
         <p>
             <label>
-                <input type="checkbox"/>
+                <input name="group{{ question.id_question }}" type="checkbox" value="{{ o.id_choice }}"/>
                 <span>{{o.text}}</span>
             </label>
         </p>
