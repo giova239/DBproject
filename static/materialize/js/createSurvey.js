@@ -21,7 +21,7 @@ $(document).ready(function(){
             qForm.find('div.questionTypeSelectWrapper').html(data);
         });
         $('#addQuestionHere').append(qForm);
-        setTimeout(function(){qForm.find('select.questionType').formSelect();addSelectChangeListener(i);},350);
+        setTimeout(function(){qForm.find('select.questionType').formSelect();addSelectChangeListener(i);$('input.select-dropdown').addClass('white-text');},350);
     });
 });
 //QUESTION TYPE CHANGER

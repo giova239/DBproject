@@ -324,49 +324,63 @@ def compile(id=None):
             questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                  survey_query.first_question).fetchone()
             if request.method == 'POST':
+                n = 1
+                s = ""
                 now = datetime.now()
                 filling_id = connection.execute(
                     'INSERT INTO "DBquestionario"."Filling"(interviewed_user, referred_survey, filling_date, filling_time) VALUES(%s,%s,%s,%s) RETURNING id_filling;',
                     current_user.id, id, now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")).fetchone().id_filling
+                s += "COMPILATION #" + str(filling_id) + "<br><br>"
                 while questions_query is not None:
+                    s += str(n) + ") -> "
                     answer_id = connection.execute(
                         'INSERT INTO "DBquestionario"."Answer"(filling, referred_question) VALUES(%s,%s) RETURNING id_answer;',
                         filling_id, questions_query.id_question).fetchone().id_answer
                     # SINGLE MULTIPLE
                     if questions_query.type == 1:
                         answer = request.form["group" + str(questions_query.id_question)]
+                        s += connection.execute('SELECT text FROM "DBquestionario"."Choice" WHERE id_choice=%s;', answer).fetchone().text + "<br>"
                         connection.execute(
                             'INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer, answer_id)
                     # MULTIPLE
                     elif questions_query.type == 2:
                         answers = request.form.getlist("group" + str(questions_query.id_question))
                         for answer in answers:
+                            s += connection.execute('SELECT text FROM "DBquestionario"."Choice" WHERE id_choice=%s;',
+                                                    answer).fetchone().text + ", "
                             connection.execute('INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer, answer_id)
+                        s = s[:-1] + "<br>"
                     # TEXT
                     elif questions_query.type == 3:
                         answer = request.form["textarea" + str(questions_query.id_question)]
                         connection.execute('INSERT INTO "DBquestionario"."TextAnswer"(answer, text) VALUES(%s,%s)',
                                            answer_id, answer)
+                        s += answer + "<br>"
                     # DATE
                     elif questions_query.type == 4:
                         answer = request.form["date" + str(questions_query.id_question)]
                         connection.execute('INSERT INTO "DBquestionario"."DateAnswer"(answer, date) VALUES(%s,%s)',
                                            answer_id, answer)
+                        s += answer + "<br>"
                     # TIME
                     elif questions_query.type == 5:
                         answer = request.form["time" + str(questions_query.id_question)]
                         connection.execute('INSERT INTO "DBquestionario"."TimeAnswer"(answer, time) VALUES(%s,%s)',
                                            answer_id, answer + ":00")
+                        s += answer + "<br>"
                     # RANGE
                     elif questions_query.type == 6:
                         answer = request.form["range" + str(questions_query.id_question)]
                         connection.execute('INSERT INTO "DBquestionario"."LikingAnswer"(answer, liking) VALUES(%s,%s)',
                                            answer_id, answer)
+                        s += answer + "<br>"
 
                     questions_query = connection.execute(
                         'SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                         questions_query.next).fetchone()
-                return redirect(url_for('compilationSubmitted', surveyID=id))
+                    n += 1
+                    print(s)
+                return redirect(url_for('compilationSubmitted', surveyID=id, compilation=s))
             else:
                 question_list = []
                 option_list = []
@@ -397,7 +411,7 @@ def compile(id=None):
 
 @app.route('/compilationSubmitted')
 def compilationSubmitted():
-    return render_template('compilationSubmitted.html', surveyID=request.args['surveyID'], user=current_user.user)
+    return render_template('compilationSubmitted.html', surveyID=request.args['surveyID'], user=current_user.user,  compilation=request.args['compilation'])
 
 
 # ----------------- DEBUG PAGES -----------------

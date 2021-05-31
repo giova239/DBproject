@@ -9,7 +9,11 @@
         {% if surveyID %}
         <h6 class="header center white-text">SurveyID: {{ surveyID }}</h6>
         {% endif %}
-        <div class="divider purple darken-3"></div>
+        <br>
+        <div class="divider white"></div>
+        {% if compilation %}
+        <p class="center light white-text">{{ compilation|safe }}</p>
+        {% endif %}
         <div class="collection">
             <a href="/" class="collection-item white-text grey darken-4"><i class="small material-icons left teal-text text-lighten-3">exit_to_app</i>exit</a>
         </div>

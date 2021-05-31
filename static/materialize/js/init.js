@@ -10,4 +10,5 @@ $(document).ready(function(){
     });
     $('.timepicker').timepicker();
     $('select').formSelect();
+    $('input.select-dropdown').addClass('white-text');
 }); // end of document ready
