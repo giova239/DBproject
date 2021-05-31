@@ -219,6 +219,117 @@ def my_survey(id=None):
         return redirect(url_for('login'))
 
 
+@app.route('/profile/analytics')
+def analytics():
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        user_surveys = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE creator=%s;', current_user.id)
+        survey_id_list = []
+        survey_title_list = []
+        survey_fillings_number_list = []
+
+        for srv in user_surveys:
+            survey_id_list.append(srv.id_survey)
+            survey_title_list.append(srv.title)
+            fillings_query = connection.execute('SELECT * FROM "DBquestionario"."Filling" WHERE referred_survey=%s;',
+                                                srv.id_survey)
+            fillings_number = 0
+            for f in fillings_query:
+                fillings_number += 1
+            survey_fillings_number_list.append(fillings_number)
+        return make_response(
+            render_template('analyticsSurveys.html', surveyIdList=survey_id_list,
+                            surveyFillingsNumberList=survey_fillings_number_list,
+                            surveyTitleList=survey_title_list,
+                            user=current_user.user))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/profile/analytics/<id>')
+def analytic(id=None):
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
+                                          id, current_user.id).fetchone()
+        if survey_query is None:
+            return render_template('analytics.html', title='SURVEY NOT FOUND')
+        else:
+            fillings_query = connection.execute(
+                'SELECT id_filling, username FROM "DBquestionario"."Filling" INNER JOIN "DBquestionario"."User" ON interviewed_user = id_user WHERE referred_survey=%s;',
+                survey_query.id_survey)
+
+        return make_response(
+            render_template('analytics.html', user=current_user.user, id=id, title=survey_query.title,
+                            fillingsList=fillings_query))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/filling/<id>')
+def filling(id=None):
+    if current_user.is_authenticated:
+        connection = engine.connect()
+
+        filling_query = connection.execute(
+            'SELECT id_filling, username, referred_survey FROM "DBquestionario"."Filling" INNER JOIN "DBquestionario"."User" ON interviewed_user = id_user WHERE id_filling=%s;',
+            id).fetchone()
+
+        if filling_query is None:
+            return render_template('filling.html', title='FILLING NOT FOUND')
+        else:
+            n = 1
+            s = ""
+            answers_query = connection.execute(
+                'SELECT * FROM "DBquestionario"."Answer" WHERE filling=%s;',
+                id)
+            for a in answers_query:
+                s += str(n) + ")  ->  "
+                qType = connection.execute('SELECT type FROM "DBquestionario"."Question" WHERE id_question=%s',
+                                           a.referred_question).fetchone().type
+                # SINGLE MULTIPLE
+                if qType == 1:
+                    s += connection.execute(
+                        'SELECT text FROM "DBquestionario"."MultipleAnswer" INNER JOIN "DBquestionario"."Choice" ON choice = id_choice WHERE answer=%s',
+                        a.id_answer).fetchone().text + "<br><br>"
+                # MULTIPLE
+                elif qType == 2:
+                    answers = connection.execute(
+                        'SELECT text FROM "DBquestionario"."MultipleAnswer" INNER JOIN "DBquestionario"."Choice" ON choice = id_choice WHERE answer=%s',
+                        a.id_answer)
+                    for answer in answers:
+                        s += answer.text + ", "
+                    s = s[:-2] + "<br><br>"
+                # TEXT
+                elif qType == 3:
+                    s += connection.execute(
+                        'SELECT text FROM "DBquestionario"."TextAnswer" WHERE answer=%s',
+                        a.id_answer).fetchone().text + "<br><br>"
+                # DATE
+                elif qType == 4:
+                    s += str(connection.execute(
+                        'SELECT date FROM "DBquestionario"."DateAnswer" WHERE answer=%s',
+                        a.id_answer).fetchone().date) + "<br><br>"
+                # TIME
+                elif qType == 5:
+                    s += str(connection.execute(
+                        'SELECT time FROM "DBquestionario"."TimeAnswer" WHERE answer=%s',
+                        a.id_answer).fetchone().time) + "<br><br>"
+                # RANGE
+                elif qType == 6:
+                    s += str(connection.execute(
+                        'SELECT liking FROM "DBquestionario"."LikingAnswer" WHERE answer=%s',
+                        a.id_answer).fetchone().liking) + "<br><br>"
+                n += 1
+
+        print(filling_query)
+        return make_response(
+            render_template('filling.html', user=current_user.user, id=id, surveyID=filling_query.referred_survey, title=filling_query.username,
+                            compilation=s))
+    else:
+        return redirect(url_for('login'))
+
+
 # ----------------- SURVEY CREATION  -----------------
 
 
@@ -339,17 +450,21 @@ def compile(id=None):
                     # SINGLE MULTIPLE
                     if questions_query.type == 1:
                         answer = request.form["group" + str(questions_query.id_question)]
-                        s += connection.execute('SELECT text FROM "DBquestionario"."Choice" WHERE id_choice=%s;', answer).fetchone().text + "<br>"
+                        s += connection.execute('SELECT text FROM "DBquestionario"."Choice" WHERE id_choice=%s;',
+                                                answer).fetchone().text + "<br>"
                         connection.execute(
-                            'INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer, answer_id)
+                            'INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer,
+                            answer_id)
                     # MULTIPLE
                     elif questions_query.type == 2:
                         answers = request.form.getlist("group" + str(questions_query.id_question))
                         for answer in answers:
                             s += connection.execute('SELECT text FROM "DBquestionario"."Choice" WHERE id_choice=%s;',
                                                     answer).fetchone().text + ", "
-                            connection.execute('INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer, answer_id)
-                        s = s[:-1] + "<br>"
+                            connection.execute(
+                                'INSERT INTO "DBquestionario"."MultipleAnswer"(choice, answer) VALUES(%s,%s)', answer,
+                                answer_id)
+                        s = s[:-2] + "<br>"
                     # TEXT
                     elif questions_query.type == 3:
                         answer = request.form["textarea" + str(questions_query.id_question)]
@@ -411,7 +526,8 @@ def compile(id=None):
 
 @app.route('/compilationSubmitted')
 def compilationSubmitted():
-    return render_template('compilationSubmitted.html', surveyID=request.args['surveyID'], user=current_user.user,  compilation=request.args['compilation'])
+    return render_template('compilationSubmitted.html', surveyID=request.args['surveyID'], user=current_user.user,
+                           compilation=request.args['compilation'])
 
 
 # ----------------- DEBUG PAGES -----------------

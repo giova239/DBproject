@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+<br>
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3 z-depth-4">
+
+        {% if title %}
+        <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
+        {% endif %}
+
+        {% if id %}
+        <h6 class="center white-text">survey #{{ id }}</h6>
+        {% endif %}
+
+        {% if fillingsList %}
+        <br>
+        <div class="collection">
+            {% for f in fillingsList %}
+            <a href="/filling/{{ f.id_filling }}" class="collection-item white-text grey darken-4">{{ f.username }}<label class="right teal-text text-lighten-3">#{{ f.id_filling }}</label></a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="row center">
+            <a class="btn-floating btn-large waves-effect waves-light orange darken-3 center" href="/graphics/{{ id }}"><i
+                    class="material-icons purple-text text-darken-3">insert_chart</i>
+            </a>
+        </div>
+        <div class="right">
+            <a href="/profile/analytics"
+               class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
+                Analytics<i class="material-icons left">keyboard_backspace</i>
+            </a>
+        </div>
+        <br>
+        <br>
+    </form>
+</div>
+
+<br>
+{% endblock %}

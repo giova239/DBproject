@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+<br>
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3 z-depth-4">
+        <h3 class="orange-text text-darken-3 center">Analytics</h3>
+
+        {% if user %}
+        <h6 class="center white-text"> {{user}} which survey do you want to analyze the result of:</h6>
+        {% endif %}
+
+        {% if surveyIdList %}
+        <br>
+        <div class="collection">
+            {% for id in surveyIdList%}
+            <a href="/profile/analytics/{{ id }}" class="collection-item white-text grey darken-4">{{ surveyTitleList[loop.index0] }}<label class="right teal-text text-lighten-3">{{  surveyFillingsNumberList[loop.index0] }} fillings</label></a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <a href="/profile"
+           class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
+            profile<i class="material-icons left">keyboard_backspace</i>
+        </a>
+        <br><br>
+    </form>
+</div>
+
+<br>
+{% endblock %}

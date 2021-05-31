@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+<br>
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3">
+        {% if title %}
+        <h4 class="header center orange-text text-darken-3">{{ title }}</h4>
+        {% endif %}
+        {% if id %}
+        <h6 class="header center white-text">Filling ID: {{ id }}</h6>
+        {% endif %}
+        <br>
+        <div class="divider white"></div>
+        {% if compilation %}
+        <p class="center light white-text">{{ compilation|safe }}</p>
+        <div class="divider white"></div>
+        <br>
+        {% endif %}
+        <br>
+        <a href="/profile/analytics/{{ surveyID }}"
+           class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
+            Analytics<i class="material-icons left">keyboard_backspace</i>
+        </a>
+        <br><br>
+    </form>
+</div>
+
+<br>
+{% endblock %}
