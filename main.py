@@ -11,8 +11,7 @@ from datetime import datetime
 
 # set FLASK_ENV=development & set FLASK_APP=main.py & flask run
 
-# TODO: improve private area (ANALYTICS SETTINGS and MyFillings)
-# TODO: profile>my surveys>id change type number to icon
+# TODO: improve private area (ANALYTICS CHARTS)
 
 # setup FLASK
 app = Flask(__name__)

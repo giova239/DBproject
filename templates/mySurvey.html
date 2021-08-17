@@ -18,7 +18,21 @@
         <br>
         <div class="collection">
             {% for question in questionsList %}
-            <a class="collection-item white-text grey darken-4">{{ question.text }}<label class="right teal-text text-lighten-3">type {{ question.type }}</label></a>
+            <a class="collection-item white-text grey darken-4">{{ question.text }}<label class="right teal-text text-lighten-3">
+            {% if question.type == 1 %}
+                <img class="white" src="{{ url_for('static',filename='images/single_answer.svg') }}">
+            {% elif question.type == 2 %}
+                <img class="white" src="{{ url_for('static',filename='images/multiple_answer.svg') }}">
+            {% elif question.type == 3 %}
+                <img class="white" src="{{ url_for('static',filename='images/text_answer.svg') }}">
+            {% elif question.type == 4 %}
+                <img class="white" src="{{ url_for('static',filename='images/date_answer.svg') }}">
+            {% elif question.type == 5 %}
+                <img class="white" src="{{ url_for('static',filename='images/time_answer.svg') }}">
+            {% elif question.type == 6 %}
+                <img class="white" src="{{ url_for('static',filename='images/liking_answer.svg') }}">
+            {% endif %}
+            </label></a>
             {% endfor %}
         </div>
         {% endif %}
