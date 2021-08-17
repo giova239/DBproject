@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from collections import Counter
 
 # set FLASK_ENV=development & set FLASK_APP=main.py & flask run
 
@@ -311,6 +312,23 @@ def graphic(id=None):
                         text_answers_list.append(textAnswerQUery.text)
 
                     answers_list.append(text_answers_list)
+                elif questions_query.type == 4:
+
+                    answers_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Answer" WHERE referred_question=%s;',
+                        questions_query.id_question)
+
+                    date_answers_list = []
+
+                    for a in answers_query:
+                        dateAnswerQuery = connection.execute(
+                            'SELECT * FROM "DBquestionario"."DateAnswer" WHERE answer=%s;',
+                            a.id_answer).fetchone()
+                        date_answers_list.append(dateAnswerQuery.date.strftime("%d/%m/%Y"))
+
+                    date_choice_list = Counter(date_answers_list).most_common()
+
+                    answers_list.append(date_choice_list)
                 else:
                     answers_list.append([])
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
