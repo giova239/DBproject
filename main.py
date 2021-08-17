@@ -12,8 +12,6 @@ from collections import Counter
 
 # set FLASK_ENV=development & set FLASK_APP=main.py & flask run
 
-# TODO: improve private area (ANALYTICS CHARTS)
-
 # setup FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secretSurveyProjectDB"
@@ -346,6 +344,25 @@ def graphic(id=None):
                     time_choice_list = Counter(time_answers_list).most_common()
 
                     answers_list.append(time_choice_list)
+                elif questions_query.type == 6:
+
+                    answers_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Answer" WHERE referred_question=%s;',
+                        questions_query.id_question)
+
+                    liking_answer_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Range" WHERE referred_question=%s;',
+                        questions_query.id_question).fetchone()
+
+                    meanLiking = 0.0
+
+                    for a in answers_query:
+                        likingAnswerQuery = connection.execute(
+                            'SELECT * FROM "DBquestionario"."LikingAnswer" WHERE answer=%s;',
+                            a.id_answer).fetchone()
+                        meanLiking += likingAnswerQuery.liking
+
+                    answers_list.append([liking_answer_query.min, liking_answer_query.max, meanLiking/answers_query.rowcount])
                 else:
                     answers_list.append([])
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',

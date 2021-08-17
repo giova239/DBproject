@@ -22,7 +22,7 @@
             {% set currentQuestion = loop.index0 %}
             <a class="collection-item white-text grey darken-4">{{ question.text }}<label
                     class="right teal-text text-lighten-3">
-                {% if question.type == 1 or  question.type == 2 %}
+                {% if question.type == 1 or question.type == 2 %}
                 {% if question.type == 1 %}
                 <img class="white" src="{{ url_for('static',filename='images/single_answer.svg') }}">
                 {% else %}
@@ -51,16 +51,19 @@
                         chart.draw(data, options);
                       }
 
+
             </script>
 
-            <a><div class="section center white" id="chart_div{{ currentQuestion }}"></div></a>
+            <a>
+                <div class="section center white" id="chart_div{{ currentQuestion }}"></div>
+            </a>
             {% elif question.type == 3 %}
             <img class="white" src="{{ url_for('static',filename='images/text_answer.svg') }}">
             <a>
-            {% for a in answerList[loop.index0] %}
+                {% for a in answerList[loop.index0] %}
                 <div class="section center white black-text"> {{ a }}</div>
                 <div class="divider"></div>
-            {% endfor %}
+                {% endfor %}
             </a>
             {% elif question.type == 4 or question.type == 5 %}
             {% if question.type == 4 %}
@@ -97,9 +100,12 @@
                         chart.draw(data, options);
                       }
 
+
             </script>
 
-            <a><div class="section center white" id="chart_div{{ currentQuestion }}"></div></a>
+            <a>
+                <div class="section center white" id="chart_div{{ currentQuestion }}"></div>
+            </a>
             {% elif question.type == 5 %}
             <img class="white" src="{{ url_for('static',filename='images/time_answer.svg') }}">
             <script type="text/javascript">
@@ -128,11 +134,25 @@
                           chart.draw(data, options);
                         }
 
+
             </script>
 
-            <a><div class="section center white" id="chart_div{{ currentQuestion }}"></div></a>
+            <a>
+                <div class="section center white" id="chart_div{{ currentQuestion }}"></div>
+            </a>
             {% elif question.type == 6 %}
             <img class="white" src="{{ url_for('static',filename='images/liking_answer.svg') }}">
+            <a>
+                <div class="section center white">
+                    <h6  class="center  black-text">{{ answerList[loop.index0][2] }}</h6>
+                    <p class="range-field">
+                        <input id="range{{ currentQuestion }}" type="range" disabled="true" min="{{ answerList[loop.index0][0] }}"
+                               max="{{ answerList[loop.index0][1] }}" value="{{ answerList[loop.index0][2] }}"/>
+                        <label for="range{{ currentQuestion }}" class="left black-text">{{ answerList[loop.index0][0] }}</label>
+                        <label for="range{{ currentQuestion }}" class="right black-text">{{ answerList[loop.index0][1] }}</label>
+                    </p>
+                </div>
+            </a>
             {% endif %}
 
             {% endfor %}
