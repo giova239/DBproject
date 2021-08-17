@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+<br>
+<br>
+<div class="row">
+    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3 z-depth-4">
+
+        {% if title %}
+        <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
+        {% endif %}
+
+        {% if id %}
+        <h6 class="center white-text">survey #{{ id }}</h6>
+        {% endif %}
+
+        {% if questionList %}
+        <br>
+        <div class="collection">
+            {% for question in questionList %}
+            {% set currentQuestion = loop.index0 %}
+            <a class="collection-item white-text grey darken-4">{{ question.text }}<label
+                    class="right teal-text text-lighten-3">
+                {% if question.type == 1 or  question.type == 2 %}
+                {% if question.type == 1 %}
+                <img class="white" src="{{ url_for('static',filename='images/single_answer.svg') }}">
+                {% else %}
+                <img class="white" src="{{ url_for('static',filename='images/multiple_answer.svg') }}">
+                {% endif %}
+            </label></a>
+
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+
+                      google.charts.load('current', {'packages':['corechart']});
+                      google.charts.setOnLoadCallback(drawChart);
+
+                      function drawChart() {
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Slices');
+                        data.addRows([
+                          {% for a in answerList[loop.index0] %}
+                            ['{{ a[0] }}', {{ a[1] }}],
+                          {% endfor %}
+                        ]);
+
+                        var options = {'width':600,
+                                       'height':300};
+
+                        var chart = new google.visualization.PieChart(document.getElementById('chart_div{{ currentQuestion }}'));
+                        chart.draw(data, options);
+                      }
+
+            </script>
+
+            <a class="container center" id="chart_div{{ currentQuestion }}"></a>
+
+            {% elif question.type == 3 %}
+            <img class="white" src="{{ url_for('static',filename='images/text_answer.svg') }}">
+            {% elif question.type == 4 %}
+            <img class="white" src="{{ url_for('static',filename='images/date_answer.svg') }}">
+            {% elif question.type == 5 %}
+            <img class="white" src="{{ url_for('static',filename='images/time_answer.svg') }}">
+            {% elif question.type == 6 %}
+            <img class="white" src="{{ url_for('static',filename='images/liking_answer.svg') }}">
+            {% endif %}
+
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="right">
+            <a href="/profile/analytics"
+               class="btn-small waves-effect waves-light orange darken-2 purple-text text-darken-4 right">
+                Analytics<i class="material-icons left">keyboard_backspace</i>
+            </a>
+        </div>
+        <br>
+        <br>
+    </form>
+</div>
+
+<br>
+{% endblock %}

@@ -265,6 +265,49 @@ def analytic(id=None):
         return redirect(url_for('login'))
 
 
+@app.route('/graphics/<id>')
+def graphic(id=None):
+    if current_user.is_authenticated:
+        connection = engine.connect()
+        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
+                                          id, current_user.id).fetchone()
+        if survey_query is None:
+            return render_template('graphics.html', title='SURVEY NOT FOUND', id=id)
+        else:
+            question_list = []
+            answers_list = []
+            questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                 survey_query.first_question).fetchone()
+            while questions_query is not None:
+                question_list.append(questions_query)
+
+                if questions_query.type == 1 or questions_query.type == 2:
+
+                    choices_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Choice" WHERE referred_question=%s;',
+                        questions_query.id_question)
+
+                    choiche_count_list = []
+
+                    for c in choices_query:
+                        countChoiceAnswer = connection.execute(
+                            'SELECT * FROM "DBquestionario"."MultipleAnswer" WHERE choice=%s;',
+                            c.id_choice).rowcount
+                        choiche_count_list.append([c.text, countChoiceAnswer])
+
+                    answers_list.append(choiche_count_list)
+                else:
+                    answers_list.append([])
+                questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
+                                                     questions_query.next).fetchone()
+
+        return make_response(
+            render_template('graphics.html', user=current_user.user, id=id, title=survey_query.title,
+                            questionList=question_list, answerList=answers_list))
+    else:
+        return redirect(url_for('login'))
+
+
 @app.route('/filling/<id>')
 def filling(id=None):
     if current_user.is_authenticated:
@@ -323,7 +366,8 @@ def filling(id=None):
 
         print(filling_query)
         return make_response(
-            render_template('filling.html', user=current_user.user, id=id, surveyID=filling_query.referred_survey, title=filling_query.username,
+            render_template('filling.html', user=current_user.user, id=id, surveyID=filling_query.referred_survey,
+                            title=filling_query.username,
                             compilation=s))
     else:
         return redirect(url_for('login'))
