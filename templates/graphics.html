@@ -55,9 +55,14 @@
             </script>
 
             <a class="container center" id="chart_div{{ currentQuestion }}"></a>
-
             {% elif question.type == 3 %}
             <img class="white" src="{{ url_for('static',filename='images/text_answer.svg') }}">
+            <a>
+            {% for a in answerList[loop.index0] %}
+                <div class="section center white black-text"> {{ a }}</div>
+                <div class="divider"></div>
+            {% endfor %}
+            </a>
             {% elif question.type == 4 %}
             <img class="white" src="{{ url_for('static',filename='images/date_answer.svg') }}">
             {% elif question.type == 5 %}

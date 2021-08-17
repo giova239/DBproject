@@ -296,11 +296,27 @@ def graphic(id=None):
                         choiche_count_list.append([c.text, countChoiceAnswer])
 
                     answers_list.append(choiche_count_list)
+                elif questions_query.type == 3:
+
+                    answers_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Answer" WHERE referred_question=%s;',
+                        questions_query.id_question)
+
+                    text_answers_list = []
+
+                    for a in answers_query:
+                        textAnswerQUery = connection.execute(
+                            'SELECT * FROM "DBquestionario"."TextAnswer" WHERE answer=%s;',
+                            a.id_answer).fetchone()
+                        text_answers_list.append(textAnswerQUery.text)
+
+                    answers_list.append(text_answers_list)
                 else:
                     answers_list.append([])
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
                                                      questions_query.next).fetchone()
 
+        print(str(answers_list))
         return make_response(
             render_template('graphics.html', user=current_user.user, id=id, title=survey_query.title,
                             questionList=question_list, answerList=answers_list))
