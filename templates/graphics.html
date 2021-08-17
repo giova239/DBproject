@@ -5,7 +5,7 @@
 <br>
 <br>
 <div class="row">
-    <form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 purple darken-3 z-depth-4">
+    <form class="col s12 m10 l8 offset-m1 offset-l2 purple darken-3 z-depth-4">
 
         {% if title %}
         <h3 class="orange-text text-darken-3 center">{{ title }}</h3>
@@ -53,7 +53,7 @@
 
             </script>
 
-            <a class="container center" id="chart_div{{ currentQuestion }}"></a>
+            <a><div class="section center white" id="chart_div{{ currentQuestion }}"></div></a>
             {% elif question.type == 3 %}
             <img class="white" src="{{ url_for('static',filename='images/text_answer.svg') }}">
             <a>
@@ -62,14 +62,18 @@
                 <div class="divider"></div>
             {% endfor %}
             </a>
-            {% elif question.type == 4 %}
+            {% elif question.type == 4 or question.type == 5 %}
+            {% if question.type == 4 %}
             <img class="white" src="{{ url_for('static',filename='images/date_answer.svg') }}">
+            {% else %}
+            <img class="white" src="{{ url_for('static',filename='images/time_answer.svg') }}">
+            {% endif %}
             <script type="text/javascript">
 
                       google.charts.load('current', {'packages':['bar']});
-                      google.charts.setOnLoadCallback(drawStuff);
+                      google.charts.setOnLoadCallback(drawChart);
 
-                      function drawStuff() {
+                      function drawChart() {
                         var data = new google.visualization.arrayToDataTable([
                           ['Date', 'Occurrency'],
                           {% for a in answerList[loop.index0] %}
@@ -95,9 +99,38 @@
 
             </script>
 
-            <a class="container center" id="chart_div{{ currentQuestion }}"></a>
+            <a><div class="section center white" id="chart_div{{ currentQuestion }}"></div></a>
             {% elif question.type == 5 %}
             <img class="white" src="{{ url_for('static',filename='images/time_answer.svg') }}">
+            <script type="text/javascript">
+
+                        google.charts.load('current', {'packages':['timeline']});
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        function drawChart() {
+                          var data = google.visualization.arrayToDataTable([
+                            ['User', 'Start Time', 'End Time'],
+                            {% for a in answerList[loop.index0] %}
+                                ['User',
+                                new Date(2014, 10, 15, {{ a[0] }}, {{ a[1] }}),
+                                new Date(2014, 10, 15, {{ a[0] }}, {{ a[1] }})],
+                            {% endfor %}
+                          ]);
+
+
+                          var options = {
+                            'width':1000,
+                            'height':300
+                          };
+
+                          var chart = new google.visualization.Timeline(document.getElementById('chart_div{{ currentQuestion }}'));
+
+                          chart.draw(data, options);
+                        }
+
+            </script>
+
+            <a><div class="section center white" id="chart_div{{ currentQuestion }}"></div></a>
             {% elif question.type == 6 %}
             <img class="white" src="{{ url_for('static',filename='images/liking_answer.svg') }}">
             {% endif %}

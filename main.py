@@ -329,6 +329,23 @@ def graphic(id=None):
                     date_choice_list = Counter(date_answers_list).most_common()
 
                     answers_list.append(date_choice_list)
+                elif questions_query.type == 5:
+
+                    answers_query = connection.execute(
+                        'SELECT * FROM "DBquestionario"."Answer" WHERE referred_question=%s;',
+                        questions_query.id_question)
+
+                    time_answers_list = []
+
+                    for a in answers_query:
+                        timeAnswerQuery = connection.execute(
+                            'SELECT * FROM "DBquestionario"."TimeAnswer" WHERE answer=%s;',
+                            a.id_answer).fetchone()
+                        time_answers_list.append(timeAnswerQuery.time.strftime("%H:%M"))
+
+                    time_choice_list = Counter(time_answers_list).most_common()
+
+                    answers_list.append(time_choice_list)
                 else:
                     answers_list.append([])
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',
