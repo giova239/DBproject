@@ -66,21 +66,28 @@
             <img class="white" src="{{ url_for('static',filename='images/date_answer.svg') }}">
             <script type="text/javascript">
 
-                      google.charts.load('current', {'packages':['corechart']});
-                      google.charts.setOnLoadCallback(drawChart);
+                      google.charts.load('current', {'packages':['bar']});
+                      google.charts.setOnLoadCallback(drawStuff);
 
-                      function drawChart() {
-                        var data = new google.visualization.DataTable();
-                        data.addColumn('string', 'Topping');
-                        data.addColumn('number', 'Answers');
-                        data.addRows([
+                      function drawStuff() {
+                        var data = new google.visualization.arrayToDataTable([
+                          ['Date', 'Occurrency'],
                           {% for a in answerList[loop.index0] %}
                             ['{{ a[0] }}', {{ a[1] }}],
                           {% endfor %}
                         ]);
 
-                        var options = {'width':600,
-                                       'height':400};
+                        var options = {
+                          width: 600,
+                          legend: { position: 'none' },
+                          bars: 'horizontal',
+                          axes: {
+                            x: {
+                              0: { side: 'top', label: 'Percentage'}
+                            }
+                          },
+                          bar: { groupWidth: "70%" }
+                        };
 
                         var chart = new google.visualization.BarChart(document.getElementById('chart_div{{ currentQuestion }}'));
                         chart.draw(data, options);
