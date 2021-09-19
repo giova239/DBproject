@@ -34,10 +34,15 @@
   color: #1da1f2;
 }
 
-.share-btn-container .fa-instagram {
-  color: #c13584;
+.share-btn-container .fa-envelope {
+  color: #ffffff;
 }
 
 .share-btn-container .fa-whatsapp {
   color: #25d366;
+}
+
+.myContainer{
+  margin: 0 auto;
+  width:40%;
 }

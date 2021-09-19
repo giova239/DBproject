@@ -43,7 +43,7 @@
         {% endif %}
 
         <div class="row center">
-            <a class="btn-floating btn-large waves-effect waves-light btn modal-trigger" href="#modal1">
+            <a class="btn-floating btn-large waves-effect waves-light btn modal-trigger" href="#modal1" onclick="shareLinksCreate()">
                 <i class="material-icons purple-text text-darken-3">share</i>
             </a>
             <!-- Modal Structure -->
@@ -61,8 +61,8 @@
                             <i class="fab fa-twitter"></i>
                         </a>
 
-                        <a href="#" class="instagram-btn">
-                            <i class="fab fa-instagram"></i>
+                        <a href="#" class="email-btn">
+                            <i class="far fa-envelope"></i>
                         </a>
 
                         <a href="#" class="telegram-btn">
@@ -74,15 +74,15 @@
                         </a>
                     </div>
                     <h5>or copy the link:</h5>
-                    <div class="container">
-                        <input id="linkToCopy" class="col s9 white-text" type="text" disabled="true"
+                    <div class="myContainer">
+                        <input id="linkToCopy" class= "col s8 white-text" type="text" disabled="true"
                                value="http://localhost:5000/survey/{{ id }}">
                         <a class="btn-floating btn-large waves-effect waves-light orange darken-3 right"
                            onclick="copyToClipboard()"><i
                                 class="material-icons purple-text text-darken-3">content_copy</i>
                         </a>
                     </div>
-                    <br><br>
+                    <br><br><br>
                 </div>
             </div>
         </div>
@@ -115,6 +115,26 @@
     function shareLinksCreate() {
         let url = document.getElementById("linkToCopy").value;
         let title = 'Compile my Survey on \"{{title}}\"';
+
+        //FACEBOOK:     https://www.facebook.com/sharer.php?u=[post-url]
+        //TWITTER:      https://twitter.com/share?url=[post-url]&text=[post-title]&via=[via]&hashtags=[hashtags]
+        //EMAIL:        $email = 'mailto:?subject=' . $[post-title] . '&body=Check out this site: '. $[post-url] .'" title="Share by Email';
+        //TELEGRAM:     https://telegram.me/share/url?url=[post-url]&text=[post-title]
+        //WHATSAPP:     https://api.whatsapp.com/send?text=[post-title] [post-url]
+
+
+        const facebookBTN = document.querySelector(".facebook-btn");
+        const twitterBTN = document.querySelector(".twitter-btn");
+        const emailBTN = document.querySelector(".email-btn");
+        const telegramBTN = document.querySelector(".telegram-btn");
+        const whatsappBTN = document.querySelector(".whatsapp-btn");
+
+        facebookBTN.setAttribute("href", `https://www.facebook.com/sharer.php?u=${url}`);
+        twitterBTN.setAttribute("href", `https://twitter.com/share?url=${url}&text=${title}`);
+        emailBTN.setAttribute("href", "mailto:?subject=${title} &amp; body=Check out my Survey ${url}.");
+        telegramBTN.setAttribute("href", `https://telegram.me/share/url?url=${url}&text=${title}`);
+        whatsappBTN.setAttribute("href", `https://api.whatsapp.com/send?text=${title} ${url}`);
+
     }
 
 
