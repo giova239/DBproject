@@ -18,7 +18,6 @@ from collections import Counter
 #TODO: UI improvement on create survey
 #TODO: color rework
 #TODO: edit compilation
-#TODO: share button
 
 # setup FLASK
 app = Flask(__name__)
