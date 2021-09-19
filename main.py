@@ -12,6 +12,12 @@ from collections import Counter
 
 # set FLASK_ENV=development & set FLASK_APP=main.py & flask run
 
+#TODO: compilation check for users that already compiled
+#TODO: UI improvement on create survey
+#TODO: color rework
+#TODO: edit compilation
+#TODO: share button
+
 # setup FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secretSurveyProjectDB"
@@ -251,26 +257,6 @@ def analytic(id=None):
         survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
                                           id, current_user.id).fetchone()
         if survey_query is None:
-            return render_template('analytics.html', title='SURVEY NOT FOUND')
-        else:
-            fillings_query = connection.execute(
-                'SELECT id_filling, username FROM "DBquestionario"."Filling" INNER JOIN "DBquestionario"."User" ON interviewed_user = id_user WHERE referred_survey=%s;',
-                survey_query.id_survey)
-
-        return make_response(
-            render_template('analytics.html', user=current_user.user, id=id, title=survey_query.title,
-                            fillingsList=fillings_query))
-    else:
-        return redirect(url_for('login'))
-
-
-@app.route('/graphics/<id>')
-def graphic(id=None):
-    if current_user.is_authenticated:
-        connection = engine.connect()
-        survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
-                                          id, current_user.id).fetchone()
-        if survey_query is None:
             return render_template('graphics.html', title='SURVEY NOT FOUND', id=id)
         else:
             question_list = []
@@ -362,7 +348,11 @@ def graphic(id=None):
                             a.id_answer).fetchone()
                         meanLiking += likingAnswerQuery.liking
 
-                    answers_list.append([liking_answer_query.min, liking_answer_query.max, meanLiking/answers_query.rowcount])
+                    if answers_query.rowcount > 0:
+                        answers_list.append([liking_answer_query.min, liking_answer_query.max, meanLiking/answers_query.rowcount])
+                    else:
+                        answers_list.append([liking_answer_query.min, liking_answer_query.max, "No Answers"])
+
                 else:
                     answers_list.append([])
                 questions_query = connection.execute('SELECT * FROM "DBquestionario"."Question" WHERE id_question=%s;',

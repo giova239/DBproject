@@ -18,30 +18,48 @@
         <br>
         <div class="collection">
             {% for question in questionsList %}
-            <a class="collection-item white-text grey darken-4">{{ question.text }}<label class="right teal-text text-lighten-3">
-            {% if question.type == 1 %}
+            <a class="collection-item white-text grey darken-4">{{ question.text }}<label
+                    class="right teal-text text-lighten-3">
+                {% if question.type == 1 %}
                 <img class="white" src="{{ url_for('static',filename='images/single_answer.svg') }}">
-            {% elif question.type == 2 %}
+                {% elif question.type == 2 %}
                 <img class="white" src="{{ url_for('static',filename='images/multiple_answer.svg') }}">
-            {% elif question.type == 3 %}
+                {% elif question.type == 3 %}
                 <img class="white" src="{{ url_for('static',filename='images/text_answer.svg') }}">
-            {% elif question.type == 4 %}
+                {% elif question.type == 4 %}
                 <img class="white" src="{{ url_for('static',filename='images/date_answer.svg') }}">
-            {% elif question.type == 5 %}
+                {% elif question.type == 5 %}
                 <img class="white" src="{{ url_for('static',filename='images/time_answer.svg') }}">
-            {% elif question.type == 6 %}
+                {% elif question.type == 6 %}
                 <img class="white" src="{{ url_for('static',filename='images/liking_answer.svg') }}">
-            {% endif %}
+                {% endif %}
             </label></a>
             {% endfor %}
         </div>
         {% endif %}
 
         <div class="row center">
-            <a class="btn-floating btn-large waves-effect waves-light orange darken-3 center"
-               onclick="copyToClipboard()"><i
-                    class="material-icons purple-text text-darken-3">content_copy</i>
+            <a class="btn-floating btn-large waves-effect waves-light btn modal-trigger" href="#modal1">
+                <i class="material-icons purple-text text-darken-3">share</i>
             </a>
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal bottom-sheet">
+                <div class="modal-content grey darken-4 white-text">
+                    <a class="modal-close btn-floating btn-small waves-effect waves-light grey darken-3 right"><i
+                            class="red-text material-icons">close</i></a>
+                    <h5>Share this Survey via:</h5>
+                    <h5>or copy the link:</h5>
+                    <div class="container">
+                        <input id="linkToCopy" class="col s9 white-text" type="text" disabled="false"
+                               value="http://localhost:5000/survey/{{ id }}">
+                        <a class="btn-floating btn-large waves-effect waves-light orange darken-3 right"
+                           onclick="copyToClipboard()"><i
+                                class="material-icons purple-text text-darken-3">content_copy</i>
+                        </a>
+                    </div>
+                    <br><br>
+                </div>
+            </div>
         </div>
         <div class="right">
             <a href="/profile/mySurveys"
@@ -57,13 +75,16 @@
 <br>
 
 <script>
-    function copyToClipboard(text) {
-        var inputc = document.body.appendChild(document.createElement("input"));
-        inputc.value = "http://localhost:5000/survey/{{ id }}";
-        inputc.focus();
-        inputc.select();
-        document.execCommand('copy');
-        inputc.parentNode.removeChild(inputc);
+    function copyToClipboard() {
+        var element = document.getElementById("linkToCopy");
+        element.disabled = false;
+        element.focus();
+        element.select();
+        if(document.execCommand("copy")){
+            element.value = "link copied!";
+            element.disabled = true;
+        }
     }
+
 </script>
 {% endblock %}

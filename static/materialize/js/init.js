@@ -11,4 +11,5 @@ $(document).ready(function(){
     $('.timepicker').timepicker();
     $('select').formSelect();
     $('input.select-dropdown').addClass('white-text');
+    $('.modal').modal();
 }); // end of document ready
