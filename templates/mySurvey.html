@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block pagebody %}
+<link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+/>
 <br>
 <br>
 <div class="row">
@@ -48,9 +52,30 @@
                     <a class="modal-close btn-floating btn-small waves-effect waves-light grey darken-3 right"><i
                             class="red-text material-icons">close</i></a>
                     <h5>Share this Survey via:</h5>
+                    <div class="share-btn-container">
+                        <a href="#" class="facebook-btn">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+
+                        <a href="#" class="twitter-btn">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+
+                        <a href="#" class="instagram-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+
+                        <a href="#" class="telegram-btn">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+
+                        <a href="#" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
                     <h5>or copy the link:</h5>
                     <div class="container">
-                        <input id="linkToCopy" class="col s9 white-text" type="text" disabled="false"
+                        <input id="linkToCopy" class="col s9 white-text" type="text" disabled="true"
                                value="http://localhost:5000/survey/{{ id }}">
                         <a class="btn-floating btn-large waves-effect waves-light orange darken-3 right"
                            onclick="copyToClipboard()"><i
@@ -74,17 +99,24 @@
 
 <br>
 
-<script>
+<script type="text/javascript">
     function copyToClipboard() {
-        var element = document.getElementById("linkToCopy");
-        element.disabled = false;
-        element.focus();
-        element.select();
-        if(document.execCommand("copy")){
+        let element = document.getElementById("linkToCopy");
+        if(element.value != "link copied!"){
+            element.disabled = false;
+            element.focus();
+            element.select();
+            document.execCommand("copy")
             element.value = "link copied!";
             element.disabled = true;
         }
     }
+
+    function shareLinksCreate() {
+        let url = document.getElementById("linkToCopy").value;
+        let title = 'Compile my Survey on \"{{title}}\"';
+    }
+
 
 </script>
 {% endblock %}
