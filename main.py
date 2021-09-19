@@ -10,7 +10,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from collections import Counter
 
-# set FLASK_ENV=development & set FLASK_APP=main.py & flask run
+# CMD:          set FLASK_ENV = development; set FLASK_APP = main.py; flask run
+# BASH:         export FLASK_ENV = development; export FLASK_APP = main.py; flask run
+# POWERSHELL:   $env:FLASK_ENV = "development"; $env:FLASK_APP = "main.py"; flask run
 
 #TODO: compilation check for users that already compiled
 #TODO: UI improvement on create survey
