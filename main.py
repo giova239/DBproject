@@ -203,7 +203,7 @@ def mySurveys():
 
 
 @app.route('/profile/mySurveys/<id>')
-def my_survey(id=None):
+def mySurvey(id=None):
     if current_user.is_authenticated:
         connection = engine.connect()
         survey_query = connection.execute('SELECT * FROM "DBquestionario"."Survey" WHERE id_survey=%s AND creator=%s;',
@@ -491,7 +491,7 @@ def createsurvey():
             survey_id = connection.execute(
                 'INSERT INTO "DBquestionario"."Survey"(title, creator, first_question) VALUES(%s,%s,%s) RETURNING id_survey;',
                 title, current_user.id, last_id)
-            return redirect(url_for('surveyCreated', surveyID=survey_id.fetchone().id_survey))
+            return redirect(url_for('mySurvey', id=str(survey_id.fetchone().id_survey)))
         else:
             return make_response(render_template('createsurvey.html', user=current_user.user))
     else:
