@@ -631,18 +631,3 @@ def compile(id=None):
 def compilationSubmitted():
     return render_template('compilationSubmitted.html', surveyID=request.args['surveyID'], user=current_user.user,
                            compilation=request.args['compilation'])
-
-
-# ----------------- DEBUG PAGES -----------------
-
-@app.route('/testquery')
-def testquery():
-    connection = engine.connect()
-    users = connection.execute('SELECT * FROM "DBquestionario"."User";')
-    s = ""
-
-    for user in users:
-        s += str(user) + "<br>"
-
-    return s
-    # return "fatto";
