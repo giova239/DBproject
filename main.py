@@ -11,7 +11,7 @@ from datetime import datetime
 from collections import Counter
 
 # CMD:          set FLASK_ENV = development; set FLASK_APP = main.py; flask run
-# BASH:         export FLASK_ENV = development; export FLASK_APP = main.py; flask run
+# BASH:         export FLASK_APP=main.py; export FLASK_ENV=development; flask run
 # POWERSHELL:   $env:FLASK_ENV = "development"; $env:FLASK_APP = "main.py"; flask run
 
 #TODO: compilation check for users that already compiled
@@ -25,7 +25,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "secretSurveyProjectDB"
 
 # DATABASE connection
-engine = create_engine('postgresql://postgres:admin@localhost:5432/postgres')
+engine = create_engine('postgresql://user:mypassword@localhost:5432/surveyDB')
 
 # setup login manager
 login_manager = LoginManager()

@@ -24,8 +24,8 @@
                                           style="font-weight: 500">Survey.com</a>
         <!-- MENU for PC/TABLET -->
         <ul class="right hide-on-med-and-down">
-            <li><a href="/createsurvey"><i class="small material-icons left teal-text text-lighten-3">insert_chart</i>Create
-                your survey</a></li>
+            <li><a href="/createsurvey"><i class="small material-icons left teal-text text-lighten-3">assignment</i>Create</a></li>
+            <li><a href="/profile/analytics"><i class="small material-icons left teal-text text-lighten-3">insert_chart</i>Analyze</a></li>
             {% if user %}
             <li><a href="/login"><i class="small material-icons left teal-text text-lighten-3">person</i>{{user}}</a>
             </li>
@@ -37,7 +37,8 @@
         </ul>
         <!-- MENU for MOBILE -->
         <ul id="nav-mobile" class="sidenav purple darken-3">
-            <li><a href="/createsurvey" class="white-text"><i class="small material-icons teal-text text-lighten-3">insert_chart</i>Create your survey</a></li>
+            <li><a href="/createsurvey" class="white-text"><i class="small material-icons teal-text text-lighten-3">assignment</i>Create</a></li>
+            <li><a href="/profile/analytics" class="white-text"><i class="small material-icons teal-text text-lighten-3">insert_chart</i>Analyze</a></li>
             {% if user %}
             <li><a href="/login" class="white-text"><i class="small material-icons teal-text text-lighten-3">person</i>{{user}}</a></li>
             {% else %}
